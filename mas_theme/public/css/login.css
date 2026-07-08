@@ -1,145 +1,414 @@
-/* Main Container */
-.big-container {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+/* ==========================================================================
+   MAS Theme — Login / Signup / Forgot Password
+   Modern, responsive redesign targeting Frappe's real login markup:
+   .for-login / .for-signup / .for-forgot sections, .login-content.page-card,
+   .page-card-head, .email-field / .password-field, .btn-login, etc.
+   ========================================================================== */
+
+:root {
+  --mas-primary: #2ecc71;
+  --mas-primary-dark: #27ae60;
+  --mas-secondary: #3498db;
+  --mas-secondary-dark: #1f6fb2;
+  --mas-bg-1: #1f6fb2;
+  --mas-bg-2: #2ecc71;
+  --mas-card-bg: rgba(255, 255, 255, 0.92);
+  --mas-card-border: rgba(255, 255, 255, 0.65);
+  --mas-text: #0f1d2e;
+  --mas-text-muted: #5a6a7f;
+  --mas-input-border: #d7e0ec;
+  --mas-input-focus: #3498db;
+  --mas-radius: 18px;
+  --mas-radius-sm: 12px;
+  --mas-shadow: 0 24px 60px rgba(15, 29, 46, 0.28);
+  --mas-field-h: 48px;
+}
+
+/* --------------------------------------------------------------------------
+   Full-page gradient backdrop. If /files/login_back.jpg exists it layers
+   under a subtle gradient veil; if it 404s the gradient still looks good.
+   -------------------------------------------------------------------------- */
+/* Force the gradient over Frappe's login.bundle.css which loads afterwards */
+html body {
+  margin: 0;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  background:
+    linear-gradient(135deg, rgba(31, 111, 178, 0.94), rgba(46, 204, 113, 0.9)),
+    url("/files/login_back.jpg") center / cover no-repeat fixed,
+    linear-gradient(135deg, var(--mas-bg-1), var(--mas-bg-2)) !important;
+  color: var(--mas-text);
+}
+
+/* This login page ships with a navbar + footer; hide them for a clean,
+   full-screen auth experience */
+body > nav.navbar,
+body > .web-footer,
+body > footer.web-footer {
+  display: none !important;
+}
+
+/* The page wrapper Frappe renders around the login sections */
+main.container,
+main.container.my-4 {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Center every auth section (login / signup / forgot / email-link).
+   Use dvh so mobile browser chrome doesn't cause overflow. */
+.for-login,
+.for-email-login,
+.for-signup,
+.for-forgot,
+.for-login-with-email-link {
+  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 0;
-}
-
-.page-content-wrapper {
-  background-image: url("/files/login_back.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-/* Login Card */
-.login-content {
-  background: #f9f9f94d;
-  border-radius: 20px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-/* Logo Section */
-.page-card-head {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.page-card-head .app-logo {
-  height: 60px;
-  margin-bottom: 15px;
-}
-
-.page-card-head h4 {
-  color: #2c3e50;
-  font-size: 22px;
-  margin: 0;
-}
-
-.login-logo {
-  display: flex;
   justify-content: center;
-  align-items: center;
+  padding: 24px 16px;
+  box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   The card
+   -------------------------------------------------------------------------- */
+.login-content.page-card,
+.login-content {
   width: 100%;
-  margin-bottom: 20px;
-  padding-left: 0;
-  padding-top: 50px;
+  max-width: 420px;
+  margin: 0 auto !important;
+  padding: 30px 34px 32px;
+  background: #ffffff !important;
+  border: 1px solid var(--mas-card-border) !important;
+  border-radius: var(--mas-radius) !important;
+  box-shadow: var(--mas-shadow) !important;
+  box-sizing: border-box;
+  animation: mas-card-in 0.45s ease both;
 }
 
-/* Welcome Section */
-.welcome-sec {
+@keyframes mas-card-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------------------------------------------------------
+   Logo + heading — .page-card-head is a child INSIDE .login-content.page-card,
+   so it is already the same width as the form. Just center it and space it;
+   no separate background/border/box so logo + credential areas read as one.
+   -------------------------------------------------------------------------- */
+.login-content .page-card-head {
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 0;
   text-align: center;
-  margin-bottom: 30px;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  box-sizing: border-box;
 }
 
-.welcome-sec span {
-  font-size: 27px;
-  font-weight: 700;
-  color: #000000;
+.login-content .page-card-head .app-logo {
+  height: 56px;
+  width: auto;
+  max-width: 60%;
+  margin: 0 auto 12px;
   display: block;
 }
 
-.welcome-sec p {
-  color: #020202;
-  margin-top: 0px;
+.login-content .page-card-head h4 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--mas-text);
+  letter-spacing: -0.01em;
 }
 
-
-
-.for_border {
-    border: 2px solid #339bd3;
-    padding: 39px;
+/* --------------------------------------------------------------------------
+   Form fields
+   -------------------------------------------------------------------------- */
+.page-card-body {
+  margin-bottom: 8px;
 }
 
-/* Form Elements */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
-.input-title p {
-  font-weight: 500;
-  color: #2c3e50;
-  margin-bottom: 5px;
+.email-field,
+.password-field {
+  position: relative;
 }
 
-.form-control {
-  height: 26px;
-  border-radius: 0px;
-  border: 2px solid #349ad6 !important;
-}
-.btn-login {
-  background-color: #AB7C42 !important;
-  border: none;
-  height: 25px;
-  width: 167px;
-  font-weight: 500;
+.login-content .form-control {
+  width: 100%;
+  height: var(--mas-field-h);
+  padding: 0 68px 0 42px;
+  font-size: 15px;
+  color: var(--mas-text);
+  background: #fff;
+  border: 1.5px solid var(--mas-input-border);
+  border-radius: var(--mas-radius-sm);
+  box-shadow: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  box-sizing: border-box;
 }
 
-a {
+.login-content .form-control::placeholder {
+  color: #9aa7b8;
+}
+
+.login-content .form-control:focus {
+  outline: none;
+  border-color: var(--mas-input-focus);
+  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.16);
+}
+
+/* Field icons that ship in the markup.
+   Frappe's login.bundle.css targets these with 4-class selectors
+   (.for-login .page-card .page-card-body .field-icon) and hard-codes
+   left:9px / top:22px. We match that specificity + !important and anchor
+   to the BOTTOM of the field group so the icon centers on the input row
+   regardless of the label height above it. The input is the last child,
+   so bottom = input's bottom edge; half the 48px field lifts it to center. */
+.for-login .page-card .page-card-body .field-icon,
+.for-forgot .page-card .page-card-body .field-icon,
+.for-login-with-email-link .page-card .page-card-body .field-icon,
+.for-signup .page-card .page-card-body .field-icon,
+.for-email-login .page-card .page-card-body .field-icon {
+  left: 14px !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: 16px !important;
+  width: 16px;
+  height: 16px;
+  display: block;
+  color: #8a97a8;
+  pointer-events: none;
+}
+
+/* Show / hide password toggle — same specificity fight, pin to the right
+   edge of the input row (bottom-anchored, matching the icon). */
+.for-login .page-card .page-card-body .email-field .toggle-password,
+.for-login .page-card .page-card-body .password-field .toggle-password,
+.for-forgot .page-card .page-card-body .email-field .toggle-password,
+.for-forgot .page-card .page-card-body .password-field .toggle-password,
+.for-login-with-email-link .page-card .page-card-body .email-field .toggle-password,
+.for-login-with-email-link .page-card .page-card-body .password-field .toggle-password,
+.for-signup .page-card .page-card-body .email-field .toggle-password,
+.for-signup .page-card .page-card-body .password-field .toggle-password,
+.for-email-login .page-card .page-card-body .email-field .toggle-password,
+.for-email-login .page-card .page-card-body .password-field .toggle-password {
+  left: auto !important;
+  right: 14px !important;
+  top: auto !important;
+  bottom: 14px !important;
   font-size: 12px;
+  font-weight: 600;
+  color: var(--mas-secondary);
+  cursor: pointer;
+  user-select: none;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .login-logo {
-    padding-left: 774px !important;
-    padding-top: 22px;
+.login-content .toggle-password:hover {
+  text-decoration: underline;
+}
+
+.forgot-password-message {
+  text-align: right;
+  margin: -6px 0 4px;
+}
+
+.forgot-password-message a,
+.sign-up-message a {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--mas-secondary);
+  text-decoration: none;
+}
+
+.forgot-password-message a:hover,
+.sign-up-message a:hover {
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+.page-card-actions {
+  margin-top: 8px;
+}
+
+.login-content .btn-login,
+.login-content .btn-primary,
+.login-content .btn-forgot,
+.login-content .btn-login-with-email-link {
+  width: 100%;
+  height: var(--mas-field-h);
+  border: none;
+  border-radius: var(--mas-radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff !important;
+  background: linear-gradient(120deg, var(--mas-primary), var(--mas-secondary));
+  box-shadow: 0 12px 24px rgba(46, 204, 113, 0.32);
+  transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+}
+
+.login-content .btn-login:hover,
+.login-content .btn-primary:hover,
+.login-content .btn-forgot:hover,
+.login-content .btn-login-with-email-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px rgba(52, 152, 219, 0.36);
+  filter: brightness(1.03);
+}
+
+.login-content .btn-login:active,
+.login-content .btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary / social login buttons */
+.login-content .btn-login-option,
+.login-content .btn-default {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  border: 1.5px solid var(--mas-input-border);
+  border-radius: var(--mas-radius-sm);
+  background: #fff;
+  color: var(--mas-text) !important;
+  font-weight: 600;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+
+.login-content .btn-login-option:hover,
+.login-content .btn-default:hover {
+  border-color: var(--mas-secondary);
+  background: #f4f9fe;
+}
+
+/* Hide the "or" divider + "Login with Email Link" option below the button */
+.login-content .social-logins,
+.login-content .login-with-email-link,
+.login-content .btn-login-with-email-link {
+  display: none !important;
+}
+
+/* Divider ("or") */
+.login-divider {
+  position: relative;
+  text-align: center;
+  margin: 20px 0 14px;
+  font-size: 13px;
+  color: var(--mas-text-muted);
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40%;
+  height: 1px;
+  background: var(--mas-input-border);
+}
+
+.login-divider::before { left: 0; }
+.login-divider::after  { right: 0; }
+
+/* Sign-up line below card */
+.sign-up-message {
+  margin-top: 20px;
+  color: #eaf4ff;
+  font-size: 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+.sign-up-message a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Dark mode
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --mas-card-bg: rgba(17, 27, 44, 0.92);
+    --mas-card-border: rgba(255, 255, 255, 0.08);
+    --mas-text: #f2f6fb;
+    --mas-text-muted: #a9b5c7;
+    --mas-input-border: rgba(255, 255, 255, 0.14);
   }
 
+  .login-content .form-control {
+    background: #0e1623;
+    color: #f2f6fb;
+  }
+
+  .login-content .btn-login-option,
+  .login-content .btn-default {
+    background: #0e1623;
+    color: #f2f6fb !important;
+  }
+
+  .login-content .btn-login-option:hover,
+  .login-content .btn-default:hover {
+    background: #16233a;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+@media (max-width: 480px) {
+  .for-login,
+  .for-email-login,
+  .for-signup,
+  .for-forgot,
+  .for-login-with-email-link {
+    padding: 16px 12px;
+  }
+
+  .login-content.page-card,
   .login-content {
-    background: #f9f9f94d;
-    border-radius: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    width: 198%;
-    max-width: 468px;
-    margin: 0 auto;
-    padding: 40px;
+    max-width: 100%;
+    padding: 28px 20px 24px;
+    border-radius: 16px;
   }
 
-  .welcome-sec span {
-    font-size: 18px;
-    font-weight: 700;
-    color: #000000;
-    display: block;
-  }
+  .page-card-head .app-logo { height: 48px; }
+  .page-card-head h4 { font-size: 19px; }
+  .login-content .form-control { font-size: 16px; } /* prevents iOS zoom-on-focus */
+}
 
-  .big-container {
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    align-items: center;
-    padding: 0;
-    padding-left: 0px !important;
+/* Short landscape phones — let the card scroll instead of clipping */
+@media (max-height: 640px) {
+  .for-login,
+  .for-email-login,
+  .for-signup,
+  .for-forgot,
+  .for-login-with-email-link {
+    align-items: flex-start;
+  }
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .login-content.page-card,
+  .login-content {
+    animation: none;
+  }
+  .login-content .btn-login,
+  .login-content .btn-primary {
+    transition: none;
   }
 }
