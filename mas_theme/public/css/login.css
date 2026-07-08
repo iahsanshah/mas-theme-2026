@@ -1,0 +1,145 @@
+/* Main Container */
+.big-container {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.page-content-wrapper {
+  background-image: url("/files/login_back.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+/* Login Card */
+.login-content {
+  background: #f9f9f94d;
+  border-radius: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Logo Section */
+.page-card-head {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.page-card-head .app-logo {
+  height: 60px;
+  margin-bottom: 15px;
+}
+
+.page-card-head h4 {
+  color: #2c3e50;
+  font-size: 22px;
+  margin: 0;
+}
+
+.login-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px;
+  padding-left: 0;
+  padding-top: 50px;
+}
+
+/* Welcome Section */
+.welcome-sec {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.welcome-sec span {
+  font-size: 27px;
+  font-weight: 700;
+  color: #000000;
+  display: block;
+}
+
+.welcome-sec p {
+  color: #020202;
+  margin-top: 0px;
+}
+
+
+
+.for_border {
+    border: 2px solid #339bd3;
+    padding: 39px;
+}
+
+/* Form Elements */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.input-title p {
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 5px;
+}
+
+.form-control {
+  height: 26px;
+  border-radius: 0px;
+  border: 2px solid #349ad6 !important;
+}
+.btn-login {
+  background-color: #AB7C42 !important;
+  border: none;
+  height: 25px;
+  width: 167px;
+  font-weight: 500;
+}
+
+a {
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .login-logo {
+    padding-left: 774px !important;
+    padding-top: 22px;
+  }
+
+  .login-content {
+    background: #f9f9f94d;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    width: 198%;
+    max-width: 468px;
+    margin: 0 auto;
+    padding: 40px;
+  }
+
+  .welcome-sec span {
+    font-size: 18px;
+    font-weight: 700;
+    color: #000000;
+    display: block;
+  }
+
+  .big-container {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    padding-left: 0px !important;
+  }
+}

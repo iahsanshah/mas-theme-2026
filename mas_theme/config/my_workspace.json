@@ -1,0 +1,220 @@
+{
+  "charts": [],
+  "content": "[{\"id\":\"mwp-panel\",\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"My Work Panel\",\"col\":12}},{\"id\":\"mwp-spacer-1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"mwp-shortcuts-header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"mwp-shortcut-leave\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leave Application\",\"col\":3}},{\"id\":\"mwp-shortcut-expense\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expense Claim\",\"col\":3}},{\"id\":\"mwp-shortcut-attendance\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Attendance\",\"col\":3}},{\"id\":\"mwp-shortcut-todo\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"ToDo\",\"col\":3}},{\"id\":\"mwp-shortcut-employee\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Employee\",\"col\":3}},{\"id\":\"mwp-shortcut-customer\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Customer\",\"col\":3}},{\"id\":\"mwp-shortcut-item\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Item\",\"col\":3}},{\"id\":\"mwp-shortcut-invoice\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Sales Invoice\",\"col\":3}},{\"id\":\"mwp-spacer-2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"mwp-reports-header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports & Masters</b></span>\",\"col\":12}},{\"id\":\"mwp-card-hr\",\"type\":\"card\",\"data\":{\"card_name\":\"HR\",\"col\":4}},{\"id\":\"mwp-card-leave\",\"type\":\"card\",\"data\":{\"card_name\":\"Leaves\",\"col\":4}},{\"id\":\"mwp-card-attendance\",\"type\":\"card\",\"data\":{\"card_name\":\"Attendance\",\"col\":4}},{\"id\":\"mwp-card-payroll\",\"type\":\"card\",\"data\":{\"card_name\":\"Payroll\",\"col\":4}}]",
+  "creation": "2025-08-01 00:00:00.000000",
+  "custom_blocks": [
+    {
+      "title": "My Work Panel",
+      "custom_block_name": "My Work Panel",
+      "is_static": 1,
+      "javascript": "",
+      "custom_html": "{% include 'mas_theme/templates/includes/my_work_panel.html' %}"
+    }
+  ],
+  "docstatus": 0,
+  "doctype": "Workspace",
+  "for_user": "",
+  "hide_custom": 0,
+  "icon": "home",
+  "idx": 0,
+  "is_hidden": 0,
+  "label": "My Workspace",
+  "links": [
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "HR",
+      "link_count": 3,
+      "onboard": 0,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Employee",
+      "link_count": 0,
+      "link_to": "Employee",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Leave Application",
+      "link_count": 0,
+      "link_to": "Leave Application",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Expense Claim",
+      "link_count": 0,
+      "link_to": "Expense Claim",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Leaves",
+      "link_count": 3,
+      "onboard": 0,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Leave Allocation",
+      "link_count": 0,
+      "link_to": "Leave Allocation",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Leave Policy",
+      "link_count": 0,
+      "link_to": "Leave Policy",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Attendance",
+      "link_count": 2,
+      "onboard": 0,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Attendance",
+      "link_count": 0,
+      "link_to": "Attendance",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Attendance Request",
+      "link_count": 0,
+      "link_to": "Attendance Request",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Payroll",
+      "link_count": 2,
+      "onboard": 0,
+      "type": "Card Break"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Salary Slip",
+      "link_count": 0,
+      "link_to": "Salary Slip",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    },
+    {
+      "hidden": 0,
+      "is_query_report": 0,
+      "label": "Additional Salary",
+      "link_count": 0,
+      "link_to": "Additional Salary",
+      "link_type": "DocType",
+      "onboard": 0,
+      "type": "Link"
+    }
+  ],
+  "modified": "2025-08-01 00:00:00.000000",
+  "modified_by": "Administrator",
+  "module": "Mas Theme",
+  "name": "My Workspace",
+  "number_cards": [],
+  "owner": "Administrator",
+  "parent_page": "",
+  "public": 1,
+  "quick_lists": [],
+  "roles": [],
+  "sequence_id": 0,
+  "shortcuts": [
+    {
+      "color": "Orange",
+      "doc_view": "List",
+      "format": "{} Open",
+      "label": "Leave Application",
+      "link_to": "Leave Application",
+      "stats_filter": "{\"status\":\"Open\"}",
+      "type": "DocType"
+    },
+    {
+      "color": "Blue",
+      "doc_view": "List",
+      "format": "{} Open",
+      "label": "Expense Claim",
+      "link_to": "Expense Claim",
+      "stats_filter": "{\"status\":\"Draft\"}",
+      "type": "DocType"
+    },
+    {
+      "color": "Green",
+      "doc_view": "List",
+      "label": "Attendance",
+      "link_to": "Attendance",
+      "type": "DocType"
+    },
+    {
+      "color": "Red",
+      "doc_view": "List",
+      "format": "{} Open",
+      "label": "ToDo",
+      "link_to": "ToDo",
+      "stats_filter": "{\"status\":\"Open\"}",
+      "type": "DocType"
+    },
+    {
+      "color": "Green",
+      "format": "{} Active",
+      "label": "Employee",
+      "link_to": "Employee",
+      "stats_filter": "{\"status\":\"Active\"}",
+      "type": "DocType"
+    },
+    {
+      "color": "Blue",
+      "label": "Customer",
+      "link_to": "Customer",
+      "type": "DocType"
+    },
+    {
+      "color": "Grey",
+      "label": "Item",
+      "link_to": "Item",
+      "type": "DocType"
+    },
+    {
+      "color": "Grey",
+      "label": "Sales Invoice",
+      "link_to": "Sales Invoice",
+      "type": "DocType"
+    }
+  ],
+  "title": "My Workspace"
+}

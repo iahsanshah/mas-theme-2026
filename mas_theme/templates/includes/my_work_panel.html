@@ -1,0 +1,309 @@
+{# My Work Panel - Modern Dashboard for ERPNext Desk #}
+<style>
+.my-work-panel {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	background: #ffffff;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+	padding: 20px;
+	max-width: 100%;
+	margin: 0 auto;
+}
+
+/* Profile Section */
+.mwp-profile {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #e8e9ea;
+	margin-bottom: 20px;
+}
+
+.mwp-profile-image {
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 3px solid #f0f0f0;
+	flex-shrink: 0;
+}
+
+.mwp-profile-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.mwp-profile-name {
+	font-size: 18px;
+	font-weight: 700;
+	color: #1a202c;
+	margin: 0 0 4px 0;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.mwp-profile-designation {
+	font-size: 14px;
+	color: #64748b;
+	margin: 0 0 2px 0;
+}
+
+.mwp-profile-company {
+	font-size: 13px;
+	color: #94a3b8;
+	margin: 0;
+}
+
+/* Attendance Section */
+.mwp-section-title {
+	font-size: 14px;
+	font-weight: 600;
+	color: #334155;
+	margin: 0 0 12px 0;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.mwp-attendance {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+	padding: 14px;
+	background: #f8fafc;
+	border-radius: 8px;
+	margin-bottom: 20px;
+}
+
+.mwp-attendance-info {
+	flex: 1;
+}
+
+.mwp-attendance-label {
+	font-size: 12px;
+	color: #64748b;
+	margin: 0 0 4px 0;
+}
+
+.mwp-attendance-time {
+	font-size: 20px;
+	font-weight: 600;
+	color: #0f172a;
+	margin: 0;
+}
+
+.mwp-attendance-status {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 12px;
+	border-radius: 20px;
+	font-size: 13px;
+	font-weight: 500;
+	flex-shrink: 0;
+}
+
+.mwp-attendance-status.present {
+	background: #dcfce7;
+	color: #166534;
+}
+
+.mwp-attendance-status.absent {
+	background: #fee2e2;
+	color: #991b1b;
+}
+
+.mwp-attendance-status.half-day {
+	background: #fef9c3;
+	color: #854d0e;
+}
+
+.mwp-attendance-status.leave {
+	background: #e0e7ff;
+	color: #3730a3;
+}
+
+.mwp-attendance-status.on-leave {
+	background: #fef3c7;
+	color: #92400e;
+}
+
+.mwp-status-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: currentColor;
+}
+
+/* Tasks Section */
+.mwp-tasks {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+	gap: 12px;
+}
+
+.mwp-task-card {
+	display: flex;
+	flex-direction: column;
+	padding: 16px;
+	background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+	border-radius: 8px;
+	border: 1px solid #e2e8f0;
+	transition: all 0.2s ease;
+}
+
+.mwp-task-card:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	transform: translateY(-2px);
+}
+
+.mwp-task-card.pending {
+	background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+	border-color: #93c5fd;
+}
+
+.mwp-task-card.overdue {
+	background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+	border-color: #fca5a5;
+}
+
+.mwp-task-count {
+	font-size: 32px;
+	font-weight: 700;
+	color: #1e40af;
+	line-height: 1;
+	margin-bottom: 4px;
+}
+
+.mwp-task-card.overdue .mwp-task-count {
+	color: #991b1b;
+}
+
+.mwp-task-label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #475569;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.my-work-panel {
+		padding: 16px;
+		border-radius: 8px;
+	}
+
+	.mwp-profile {
+		flex-direction: column;
+		text-align: center;
+		gap: 12px;
+	}
+
+	.mwp-profile-name {
+		white-space: normal;
+	}
+
+	.mwp-attendance {
+		flex-direction: column;
+		text-align: center;
+		gap: 12px;
+	}
+
+	.mwp-tasks {
+		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+	}
+
+	.mwp-task-count {
+		font-size: 28px;
+	}
+}
+
+@media (max-width: 480px) {
+	.mwp-attendance {
+		padding: 12px;
+	}
+
+	.mwp-task-card {
+		padding: 14px;
+	}
+
+	.mwp-task-count {
+		font-size: 24px;
+	}
+}
+
+/* Dark mode support (optional, for future) */
+@media (prefers-color-scheme: dark) {
+	.my-work-panel {
+		background: #1e293b;
+	}
+
+	.mwp-profile-name {
+		color: #f1f5f9;
+	}
+
+	.mwp-attendance {
+		background: #334155;
+	}
+
+	.mwp-attendance-time {
+		color: #f8fafc;
+	}
+
+	.mwp-section-title {
+		color: #cbd5e1;
+	}
+}
+</style>
+
+<div class="my-work-panel">
+	<!-- Profile Section -->
+	<div class="mwp-profile">
+		<img
+			src="{{ frappe.get_url() }}/files/{{ frappe.db.get_value('Employee', frappe.db.get_value('Employee', {'user_id': frappe.session.user}, 'name'), 'image') or '/assets/frappe/images/ui/avatar.png' }}"
+			alt="Profile"
+			class="mwp-profile-image"
+			onerror="this.src='/assets/frappe/images/ui/avatar.png'"
+		>
+		<div class="mwp-profile-info">
+			<h2 class="mwp-profile-name">{{ frappe.db.get_value('Employee', frappe.db.get_value('Employee', {'user_id': frappe.session.user}, 'name'), 'employee_name') or frappe.session.user }}</h2>
+			<p class="mwp-profile-designation">{{ frappe.db.get_value('Employee', frappe.db.get_value('Employee', {'user_id': frappe.session.user}, 'name'), 'designation') or 'Employee' }}</p>
+			<p class="mwp-profile-company">{{ frappe.db.get_value('Employee', frappe.db.get_value('Employee', {'user_id': frappe.session.user}, 'name'), 'company') or frappe.defaults.get_user_default('Company') }}</p>
+		</div>
+	</div>
+
+	<!-- Attendance Section -->
+	<h3 class="mwp-section-title">Today's Attendance</h3>
+	<div class="mwp-attendance">
+		<div class="mwp-attendance-info">
+			<p class="mwp-attendance-label">Working Hours</p>
+			<p class="mwp-attendance-time">
+				{%- set today_attendance = frappe.db.get_value('Attendance', {'employee': frappe.db.get_value('Employee', {'user_id': frappe.session.user}, 'name'), 'attendance_date': frappe.utils.today()}, ['status', 'working_hours']) -%}
+				{{ today_attendance[1] if today_attendance and today_attendance[1] else '--:--' }}
+			</p>
+		</div>
+		<span class="mwp-attendance-status {{ today_attendance[0].lower().replace(' ', '-') if today_attendance else 'present' }}">
+			<span class="mwp-status-dot"></span>
+			{{ today_attendance[0] if today_attendance else 'Not Punched In' }}
+		</span>
+	</div>
+
+	<!-- Tasks Section -->
+	<h3 class="mwp-section-title">My Tasks</h3>
+	<div class="mwp-tasks">
+		<!-- Pending Tasks -->
+		<div class="mwp-task-card pending">
+			<p class="mwp-task-count">{{ frappe.db.count('ToDo', {'allocated_to': frappe.session.user, 'status': 'Open'}) or 0 }}</p>
+			<p class="mwp-task-label">Pending Tasks</p>
+		</div>
+
+		<!-- Overdue Tasks -->
+		<div class="mwp-task-card overdue">
+			<p class="mwp-task-count">{{ frappe.db.sql("""SELECT COUNT(*) FROM `tabToDo` WHERE allocated_to = %s AND status = 'Open' AND date < %s""", (frappe.session.user, frappe.utils.today()))[0][0] if frappe.db else 0 }}</p>
+			<p class="mwp-task-label">Overdue Tasks</p>
+		</div>
+	</div>
+</div>
