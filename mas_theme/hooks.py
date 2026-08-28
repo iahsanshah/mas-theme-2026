@@ -16,3 +16,8 @@ web_include_css = [
 	"/assets/mas_theme/css/login.css",
 	"/assets/mas_theme/css/website.css",
 ]
+
+# Website (frontend) JS - login page branded panel (tagline + social links)
+web_include_js = [
+	"/assets/mas_theme/js/login_theme.js",
+]

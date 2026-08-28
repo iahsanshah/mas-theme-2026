@@ -6,18 +6,18 @@
    ========================================================================== */
 
 :root {
-  --mas-primary: #2ecc71;
-  --mas-primary-dark: #27ae60;
-  --mas-secondary: #3498db;
-  --mas-secondary-dark: #1f6fb2;
-  --mas-bg-1: #1f6fb2;
-  --mas-bg-2: #2ecc71;
+  --mas-primary: #0b92c9;
+  --mas-primary-dark: #183479;
+  --mas-secondary: #0b92c9;
+  --mas-secondary-dark: #183479;
+  --mas-bg-1: #183479;
+  --mas-bg-2: #0b92c9;
   --mas-card-bg: rgba(255, 255, 255, 0.92);
   --mas-card-border: rgba(255, 255, 255, 0.65);
   --mas-text: #0f1d2e;
   --mas-text-muted: #5a6a7f;
   --mas-input-border: #d7e0ec;
-  --mas-input-focus: #3498db;
+  --mas-input-focus: #0b92c9;
   --mas-radius: 18px;
   --mas-radius-sm: 12px;
   --mas-shadow: 0 24px 60px rgba(15, 29, 46, 0.28);
@@ -33,7 +33,7 @@ html body {
   margin: 0;
   font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
   background:
-    linear-gradient(135deg, rgba(31, 111, 178, 0.94), rgba(46, 204, 113, 0.9)),
+    linear-gradient(135deg, rgba(24, 52, 121, 0.94), rgba(11, 146, 201, 0.9)),
     url("/files/login_back.jpg") center / cover no-repeat fixed,
     linear-gradient(135deg, var(--mas-bg-1), var(--mas-bg-2)) !important;
   color: var(--mas-text);
@@ -70,6 +70,153 @@ main.container.my-4 {
   justify-content: center;
   padding: 24px 16px;
   box-sizing: border-box;
+}
+
+/* --------------------------------------------------------------------------
+   Login page: two-panel layout. login_theme.js wraps .page-card-head and
+   .login-content.page-card (siblings inside .for-login) in a dedicated
+   .mas-login-shell, so the card sizes to its own content instead of
+   inheriting .for-login's min-height: 100dvh from the rule above.
+   -------------------------------------------------------------------------- */
+.mas-login-shell {
+  display: grid;
+  grid-template-columns: minmax(240px, 290px) minmax(300px, 360px);
+  align-items: stretch;
+  width: 100%;
+  max-width: 650px;
+  min-height: 460px;
+  background: #fff;
+  border-radius: var(--mas-radius);
+  box-shadow: var(--mas-shadow);
+  overflow: hidden;
+  animation: mas-card-in 0.45s ease both;
+}
+
+.mas-login-shell .page-card-head {
+  grid-column: 1;
+  margin: 0;
+  padding: 44px 26px 32px;
+  background: linear-gradient(160deg, var(--mas-bg-2), var(--mas-bg-1));
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.mas-login-shell .page-card-head .app-logo {
+  height: auto;
+  max-height: 48px;
+  max-width: 70%;
+  margin: 0 auto 14px;
+  padding: 8px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.mas-login-shell .page-card-head h4 {
+  color: #fff;
+  font-size: 19px;
+}
+
+.mas-login-tm {
+  font-size: 0.5em;
+  vertical-align: super;
+  margin-left: 1px;
+}
+
+.mas-login-tagline {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 200px;
+}
+
+.mas-login-social-label {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+}
+
+.mas-login-social {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.mas-login-social a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.mas-login-social a svg {
+  width: 15px;
+  height: 15px;
+}
+
+.mas-login-social a:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.mas-login-shell .login-content.page-card {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  margin: 0 !important;
+  max-width: none;
+  padding: 40px 36px;
+  border: none !important;
+  border-radius: 0;
+  box-shadow: none !important;
+  animation: none;
+}
+
+.mas-login-shell .login-content form {
+  width: 100%;
+}
+
+@media (max-width: 620px) {
+  .mas-login-shell {
+    grid-template-columns: 1fr;
+    max-width: 380px;
+  }
+
+  .mas-login-shell .page-card-head {
+    padding: 26px 22px 20px;
+  }
+
+  .mas-login-shell .login-content.page-card {
+    padding: 24px 22px 28px;
+  }
+}
+
+@media (max-width: 400px) {
+  .for-login,
+  .for-email-login,
+  .for-signup,
+  .for-forgot,
+  .for-login-with-email-link {
+    padding: 12px 10px;
+  }
+
+  .mas-login-shell {
+    max-width: 100%;
+    border-radius: 16px;
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -163,7 +310,7 @@ main.container.my-4 {
 .login-content .form-control:focus {
   outline: none;
   border-color: var(--mas-input-focus);
-  box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.16);
+  box-shadow: 0 0 0 4px rgba(24, 52, 121, 0.16);
 }
 
 /* Field icons that ship in the markup.
@@ -253,7 +400,7 @@ main.container.my-4 {
   font-weight: 600;
   color: #fff !important;
   background: linear-gradient(120deg, var(--mas-primary), var(--mas-secondary));
-  box-shadow: 0 12px 24px rgba(46, 204, 113, 0.32);
+  box-shadow: 0 12px 24px rgba(11, 146, 201, 0.32);
   transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
@@ -262,7 +409,7 @@ main.container.my-4 {
 .login-content .btn-forgot:hover,
 .login-content .btn-login-with-email-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 18px 32px rgba(52, 152, 219, 0.36);
+  box-shadow: 0 18px 32px rgba(24, 52, 121, 0.36);
   filter: brightness(1.03);
 }
 
@@ -390,15 +537,19 @@ main.container.my-4 {
   .login-content .form-control { font-size: 16px; } /* prevents iOS zoom-on-focus */
 }
 
-/* Short landscape phones — let the card scroll instead of clipping */
-@media (max-height: 640px) {
-  .for-login,
-  .for-email-login,
-  .for-signup,
-  .for-forgot,
-  .for-login-with-email-link {
-    align-items: flex-start;
-  }
+/* Short viewports — center horizontally always; only fall back to top
+   alignment on the vertical axis if the card is taller than the viewport,
+   so it scrolls into view instead of clipping. (align-items is the
+   cross/horizontal axis here since these are flex-direction: column —
+   the old rule set align-items: flex-start, which pinned the card to the
+   left edge instead of fixing vertical overflow.) */
+.for-login,
+.for-email-login,
+.for-signup,
+.for-forgot,
+.for-login-with-email-link {
+  justify-content: safe center;
+  overflow-y: auto;
 }
 
 /* Respect reduced-motion preference */
