@@ -1,0 +1,109 @@
+/* for company select */
+/* Style for the select container */
+    body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background-color: #f5f9ff;
+        color: #1e293b;
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding: 40px;
+    }
+
+    .card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        grid-column: span 4;
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 28px;
+        color: #1e293b;
+    }
+
+    .card h2 {
+        font-size: 14px;
+        color: #64748b;
+        margin: 0;
+        margin-bottom: 6px;
+        font-weight: 500;
+    }
+
+    .card .value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    /* Small charts / placeholders */
+    .chart {
+        height: 100px;
+        background: linear-gradient(180deg, #93c5fd 0%, #bfdbfe 100%);
+        border-radius: 12px;
+        margin-top: 10px;
+    }
+
+    .progress-circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        border: 8px solid #e2e8f0;
+        border-top-color: #3b82f6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 700;
+        color: #3b82f6;
+        font-size: 18px;
+        margin: auto;
+    }
+
+    .chart-bar {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        height: 120px;
+        margin-top: 10px;
+    }
+
+    .chart-bar div {
+        flex: 1;
+        background-color: #3b82f6;
+        border-radius: 6px;
+    }
+
+    .chart-bar div:nth-child(1) { height: 150px; }
+    .chart-bar div:nth-child(2) { height: 100px; }
+    .chart-bar div:nth-child(3) { height: 180px; }
+    .chart-bar div:nth-child(4) { height: 130px; }
+    .chart-bar div:nth-child(5) { height: 110px; }
+
+    @media (max-width: 1000px) {
+        .dashboard {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+            padding: 20px;
+        }
+    }

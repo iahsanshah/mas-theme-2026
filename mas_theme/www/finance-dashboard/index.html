@@ -1,0 +1,1843 @@
+﻿{% extends "templates/web.html" %}
+
+{% block page_content %}
+
+<div class="dashboard-wrapper">
+
+    <div class="filter-container">
+        <div class="filter-group">
+            <label for="company">Company</label>
+            <select id="company">
+
+                <option value="Imperial Ventures Kangjie Joint Venture (IVKJV)">Imperial Ventures Kangjie Joint Venture (IVKJV)</option>
+                <option value="Endurance Environment Private Limited">Endurance Environment Private Limited</option>
+				                <option value="">Select Company</option>
+                <option value="Mas">Mas</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="from_date">From Date</label>
+            <input type="date" id="from_date" />
+        </div>
+
+        <div class="filter-group">
+            <label for="to_date">To Date</label>
+            <input type="date" id="to_date" />
+        </div>
+
+        <button id="apply_filters" class="filter-btn">
+            Apply Filters
+        </button>
+    </div>
+   <!-- <div class="dashboard-header">
+        <h1>Finance & Operational Dashboard</h1>
+        <div class="header-decoration"></div>
+    </div>-->
+
+    <div class="pnl-section">
+        <div class="section-header">
+            <h2>Financial Overview for the Current Year </h2>
+            <div class="section-decoration"></div>
+        </div>
+
+        <!-- Chart at full width -->
+        <div class="pnl-chart-container">
+            <div id="pnl-chart"></div>
+        </div>
+
+
+        <!-- Summary and Accounts Container -->
+        <div class="summary-accounts-container">
+            <!-- Summary Box with Bar Chart -->
+            <div class="summary-box">
+                <div class="summary-item-inline">
+                    <span class="summary-label-inline">Income</span>
+                    <span class="summary-value-inline income-value" id="total_income">₨ 0</span>
+                </div>
+                <div class="summary-item-inline">
+                    <span class="summary-label-inline">Expense</span>
+                    <span class="summary-value-inline expense-value" id="total_expenses">₨ 0</span>
+                </div>
+                <div class="summary-item-inline">
+                    <span class="summary-label-inline">Net Profit</span>
+                    <span class="summary-value-inline profit-value" id="net_profit">₨ 0</span>
+                </div>
+                <div style="margin-top: 15px; height: 100px;">
+                    <canvas id="summary-bar-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Bank and Cash Combined Box -->
+            <div class="accounts-section-inline">
+                <h3 class="accounts-heading">Bank & Cash Accounts</h3>
+                <div class="accounts-grid" id="bank-accounts-list">
+                    <div class="loading-message">Loading bank accounts...</div>
+                </div>
+                <button id="load-more-banks" class="load-more-btn" style="display: none;">
+                    <span>Load More</span>
+                    <div class="btn-icon-arrow"></div>
+                </button>
+                <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #eee;"></div>
+                <div class="accounts-grid" id="cash-accounts-list">
+                    <div class="loading-message">Loading cash accounts...</div>
+                </div>
+                <button id="load-more-cash" class="load-more-btn" style="display: none;">
+                    <span>Load More</span>
+                    <div class="btn-icon-arrow"></div>
+                </button>
+            </div>
+
+            <!-- Expense Accounts Box with Donut Chart -->
+            <div class="accounts-section-inline">
+                <h3 class="accounts-heading">Expense Accounts</h3>
+				 <div style=" align-items: center; justify-content: center;">
+                        <canvas id="expense-donut-chart" style="max-height: 200px;"></canvas>
+                    </div>
+                <div style=" gap: 20px;">
+                    <div style="flex: 1;">
+                        <div class="accounts-grid" id="expense-accounts-list">
+                            <div class="loading-message">Loading expense accounts...</div>
+                        </div>
+                        <button id="load-more-expense" class="load-more-btn" style="display: none;">
+                            <span>Load More</span>
+                            <div class="btn-icon-arrow"></div>
+                        </button>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+        <!-- AR/AP Chart and Finance Reports Section -->
+        <div class="ar-ap-container">
+            <!-- AR/AP Aging Chart -->
+            <div class="ar-ap-box-combined">
+                <h3 class="accounts-heading">Accounts Payable & Receivable Aging</h3>
+                <div style="margin-top: 15px; height: 300px;">
+                    <canvas id="ar-ap-combined-chart"></canvas>
+                </div>
+            </div>
+
+            <!-- Finance Reports List -->
+            <div class="ar-ap-box-combined">
+                <h3 class="accounts-heading">Finance Reports</h3>
+                <div class="finance-reports-list">
+                    <div class="report-item" data-report="Trial Balance">
+                        <span class="report-name">Trial Balance</span>
+                        <span class="report-icon">→</span>
+                    </div>
+                    <div class="report-item" data-report="General Ledger">
+                        <span class="report-name">General Ledger</span>
+                        <span class="report-icon">→</span>
+                    </div>
+                    <div class="report-item" data-report="Cash Flow">
+                        <span class="report-name">Cash Flow</span>
+                        <span class="report-icon">→</span>
+                    </div>
+                    <div class="report-item" data-report="Expense Report">
+                        <span class="report-name">Expense Report</span>
+                        <span class="report-icon">→</span>
+                    </div>
+                    <div class="report-item" data-report="Profit & Loss">
+                        <span class="report-name">Profit & Loss</span>
+                        <span class="report-icon">→</span>
+                    </div>
+                    <div class="report-item" data-report="Balance Sheet">
+                        <span class="report-name">Balance Sheet</span>
+                        <span class="report-icon">→</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+<style>
+    :root {
+        --primary: #4e73df;
+        --primary-light: #7a9ff7;
+        --primary-dark: #2a4bae;
+        --secondary: #1cc88a;
+        --danger: #e74a3b;
+        --warning: #f6c23e;
+        --info: #36b9cc;
+        --dark: #5a5c69;
+        --light: #f8f9fc;
+        --gray: #d1d3e2;
+        --gray-dark: #b7b9cc;
+        --white: #fff;
+        --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        --transition: all 0.2s ease;
+
+        --success-color: #00c896;
+        --danger-color: #ff4757;
+        --primary-color: #0b92c9;
+        --secondary-color: #183479;
+        --accent-color: #ffb347;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fb;
+        color: #333;
+    }
+
+    /* Override Frappe's default container width */
+    .page-content-wrapper,
+    .page-content,
+    .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin: 0 !important;
+    }
+
+    .web-footer {
+        display: none !important;
+    }
+
+    .dashboard-wrapper {
+        width: 99%;
+        max-width: 99%;
+        margin: 0;
+        padding: 0;
+		
+    }
+
+    .dashboard-header {
+        position: relative;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .dashboard-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin: 0;
+        padding: 20px 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .header-decoration {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 2px;
+    }
+
+    .section-header {
+        position: relative;
+        margin: 40px 0 20px;
+        padding-left: 15px;
+    }
+
+    .section-header h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin: 0;
+    }
+
+    .section-decoration {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 30px;
+        background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+        border-radius: 3px;
+    }
+
+    .filter-container {
+     
+        background-color: #f7f7f7;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        gap: 16px;
+        justify-content: flex-end;
+        align-items: center;
+            margin-bottom: -24px;
+    }
+
+    .filter-container label {
+        font-weight: bold;
+        color: #333;
+        width: 100px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        margin-bottom: 2px;
+        color: #333;
+        font-size: 0.9rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        padding: 5px 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        background: white;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .filter-group select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 16px;
+        padding-right: 35px;
+    }
+
+    .filter-group select:hover {
+        border-color: #9ca3af;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .filter-container input[type="date"] {
+        padding: 2px;
+        width: 200px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .filter-btn {
+        padding: 10px 20px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .filter-btn:hover {
+        background-color: var(--secondary-color);
+    }
+
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin: 40px 0;
+    }
+
+    .card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        transition: var(--transition);
+        display: flex;
+        position: relative;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        position: relative;
+    }
+
+    .workforce-icon:before {
+        content: '';
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    }
+
+    .workforce-icon:after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 25px;
+        background: white;
+        border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+        bottom: 10px;
+    }
+
+    .target-icon:before {
+        content: '';
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        border: 4px solid white;
+        border-radius: 50%;
+    }
+
+    .target-icon:after {
+        content: '';
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: white;
+        border-radius: 50%;
+    }
+
+    .card-content {
+        flex: 1;
+        padding: 20px;
+    }
+
+    .primary-card .card-icon {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .secondary-card .card-icon {
+        background: linear-gradient(135deg, var(--accent-color), #ff9a76);
+    }
+
+    .card h2 {
+        font-size: 1rem;
+        color: #64748b;
+        margin: 0 0 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card .sub-metric {
+        font-size: 0.85rem;
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+    }
+
+    .card .value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin: 5px 0;
+    }
+
+    .charts-section {
+        margin: 40px 0;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 25px;
+    }
+
+    .chart-card {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 20px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 20px;
+        height: 300px;
+        position: relative;
+    }
+
+    .pnl-section {
+        margin: 40px 0;
+        width: 100%;
+    }
+
+    .ar-ap-container {
+        display: flex;
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .ar-ap-box {
+        flex: 1;
+        background: var(--white);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+    }
+
+    .ar-ap-box-combined {
+        flex: 1;
+        background: var(--white);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+    }
+
+    .finance-reports-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 15px;
+    }
+
+    .report-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 10px;
+        border-bottom: 1px solid #eee;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .report-item:last-child {
+        border-bottom: none;
+    }
+
+    .report-item:hover {
+        background: #f8f9fa;
+    }
+
+    .report-name {
+        font-size: 13px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .report-icon {
+        font-size: 16px;
+        color: #999;
+        transition: var(--transition);
+    }
+
+    .report-item:hover .report-icon {
+        color: #4e73df;
+        transform: translateX(5px);
+    }
+
+    .ar-ap-summary {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .summary-accounts-container {
+        display: flex;
+        gap: 20px;
+        margin: 20px 0 30px 0;
+        align-items: flex-start;
+    }
+
+    .summary-box {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: var(--white);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .summary-item-inline {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .summary-label-inline {
+        font-size: 13px;
+        font-weight: 600;
+        color: #333;
+        white-space: nowrap;
+    }
+
+    .summary-value-inline {
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+
+    .accounts-section-inline {
+        background: var(--white);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: var(--shadow);
+        flex: 1;
+        min-width: 300px;
+    }
+
+    .accounts-heading {
+        font-size: 14px;
+        font-weight: 700;
+        color: #333;
+        margin: 0 0 15px 0;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .summary-item {
+        flex: 1;
+        text-align: center;
+    }
+
+    .summary-divider {
+        width: 2px;
+        height: 60px;
+        background: linear-gradient(to bottom, transparent, var(--gray), transparent);
+        margin: 0 20px;
+    }
+.navbar-primary {
+    background-color: var(--blue-500);
+    display: none !important;
+}
+    .summary-label {
+        font-size: 12px;
+        color: var(--gray-dark);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .summary-value {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-top: 8px;
+    }
+
+    .income-value {
+        color: var(--secondary);
+    }
+
+    .expense-value {
+        color: var(--danger);
+    }
+
+    .profit-value {
+        color: var(--primary);
+    }
+
+    .pnl-chart-container {
+        width: 100%;
+        background: var(--white);
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: var(--shadow);
+    }
+
+    #pnl-chart {
+        width: 100% !important;
+        height: 450px !important;
+    }
+
+    #pnl-chart canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    .table-section {
+        margin: 40px 0;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+    }
+
+    #shortage_list_box {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        background: var(--primary-color);
+        color: white;
+        z-index: 10;
+    }
+
+    th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .table-title {
+        text-align: center;
+        font-size: 1.2rem;
+        background: var(--dark-color);
+    }
+
+    td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    tbody tr {
+        transition: var(--transition);
+    }
+
+    tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .loading-row {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #999;
+    }
+
+    .load-more-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 15px;
+        background: white;
+        border: none;
+        border-top: 1px solid #eee;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--primary-color);
+        transition: var(--transition);
+    }
+
+    .load-more-btn:hover {
+        background: #f8f9fa;
+    }
+
+    .btn-icon-arrow {
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid var(--primary-color);
+        transition: var(--transition);
+    }
+
+    .load-more-btn:hover .btn-icon-arrow {
+        transform: translateY(2px);
+    }
+
+    @media (max-width: 1000px) {
+        .dashboard {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .summary-box {
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .summary-divider {
+            width: 80%;
+            height: 2px;
+            margin: 15px 0;
+        }
+
+        .web-footer {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 1100px) {
+        .summary-accounts-container {
+            flex-wrap: wrap;
+        }
+
+        .summary-box,
+        .accounts-section-inline {
+            flex: 1 1 calc(50% - 10px);
+            min-width: 280px;
+        }
+
+        .ar-ap-container {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .summary-accounts-container {
+            flex-direction: column;
+        }
+
+        .summary-box,
+        .accounts-section-inline {
+            flex: 1;
+            width: 100%;
+        }
+
+        .ar-ap-container {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-btn {
+            align-self: stretch;
+            margin-top: 10px;
+        }
+
+        .summary-box {
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .summary-divider {
+            width: 80%;
+            height: 2px;
+            margin: 15px 0;
+        }
+
+        .summary-value {
+            font-size: 1.6rem;
+        }
+
+        .web-footer {
+            display: none !important;
+        }
+    }
+
+    /* Accounts Section Styles */
+    .accounts-section {
+        margin: 40px 0;
+    }
+
+    .accounts-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2px;
+        margin: 0;
+    }
+
+    #expense-accounts-list.accounts-grid,
+    #bank-accounts-list.accounts-grid,
+    #cash-accounts-list.accounts-grid {
+        flex-direction: column;
+        flex-wrap: nowrap;
+        gap: 0;
+    }
+
+    .account-card {
+        background: white;
+        border-radius: 8px;
+        padding: 10px 15px;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        flex: 0 0 auto;
+        min-width: 200px;
+        gap: 10px;
+    }
+
+    .account-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    #expense-accounts-list .account-card,
+    #bank-accounts-list .account-card,
+    #cash-accounts-list .account-card {
+        background: transparent;
+        border-radius: 0;
+        padding: 8px 10px;
+        box-shadow: none;
+        border-bottom: 1px solid #eee;
+        min-width: auto;
+    }
+
+    #expense-accounts-list .account-card:hover,
+    #bank-accounts-list .account-card:hover,
+    #cash-accounts-list .account-card:hover {
+        transform: none;
+        box-shadow: none;
+        background: #f8f9fa;
+    }
+
+    #bank-accounts-list .account-card:last-child,
+    #cash-accounts-list .account-card:last-child,
+    #expense-accounts-list .account-card:last-child {
+        border-bottom: none;
+    }
+
+    .bank-logo {
+        display: none;
+    }
+
+    .cash-icon {
+        display: none;
+    }
+
+    .account-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .account-name {
+        font-weight: 500;
+        font-size: 10px;
+        color: #333;
+        
+        overflow: hidden;
+        text-overflow: ellipsis;
+        
+    }
+
+    .account-number {
+        display: none;
+    }
+
+    .account-balance {
+        font-size: 13px;
+        font-weight: 700;
+        color: #1cc88a;
+        white-space: nowrap;
+        margin-left: auto;
+    }
+
+    .account-balance.negative {
+        color: #e74a3b;
+    }
+
+    .loading-message {
+        text-align: center;
+        padding: 40px;
+        color: #999;
+        font-style: italic;
+    }
+
+    @media (max-width: 768px) {
+        .account-card {
+            min-width: 150px;
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script src="/assets/fleet_igl/js/jquery-3.6.0.min.js"></script>
+<script src="/assets/fleet_igl/js/chart.js"></script>
+<script src="/assets/fleet_igl/js/graph.js"></script>
+
+<script>
+$(document).ready(function() {
+
+    // Currency formatting helper
+    function formatCurrency(value) {
+        return '₨ ' + Math.abs(value).toLocaleString('en-PK', {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        });
+    }
+
+    // Set default date range = yesterday
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 364);
+    const formattedYesterday = yesterday.toISOString().split('T')[0];
+const formattedtoday = today.toISOString().split('T')[0];
+    $('#from_date').val(formattedYesterday);
+    $('#to_date').val(formattedtoday);
+
+    // Function to load P&L data
+    function loadPNLChart() {
+        const company = $('#company').val();
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+
+        if (!company || !from_date || !to_date) {
+            frappe.msgprint("Please select Company and Date Range");
+            return;
+        }
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api_finance_dashboard.get_quarterly_pnl",
+            args: { company, from_date, to_date },
+            callback: function(r) {
+                if (!r.message || r.message.length === 0) {
+                    $('#pnl-chart').html("No data available for selected range");
+                    $('#total_income').text('₨ 0');
+                    $('#total_expenses').text('₨ 0');
+                    $('#net_profit').text('₨ 0');
+                    return;
+                }
+
+                // Prepare monthly data
+                let monthlyLabels = [];
+                let monthlyIncome = [];
+                let monthlyExpense = [];
+                let totalIncome = 0;
+                let totalExpenses = 0;
+
+                console.log('API Response:', r.message);
+
+                r.message.forEach(quarter => {
+                    console.log('Quarter data:', quarter);
+                    console.log('Monthly data:', quarter.monthly_data);
+
+                    if (quarter.monthly_data && Array.isArray(quarter.monthly_data) && quarter.monthly_data.length > 0) {
+                        quarter.monthly_data.forEach(month => {
+                            monthlyLabels.push(month.month);
+                            monthlyIncome.push(month.income || 0);
+                            monthlyExpense.push(Math.abs(month.expenses) || 0);
+                            totalIncome += month.income || 0;
+                            totalExpenses += Math.abs(month.expenses) || 0;
+                        });
+                    } else {
+                        // Fallback: use quarterly data if monthly data is not available
+                        console.warn('No monthly data found for quarter:', quarter.quarter);
+                        monthlyLabels.push(quarter.quarter);
+                        monthlyIncome.push(quarter.income || 0);
+                        monthlyExpense.push(Math.abs(quarter.expenses) || 0);
+                        totalIncome += quarter.income || 0;
+                        totalExpenses += Math.abs(quarter.expenses) || 0;
+                    }
+                });
+
+                console.log('Final Monthly Labels:', monthlyLabels);
+                console.log('Final Monthly Income:', monthlyIncome);
+                console.log('Final Monthly Expense:', monthlyExpense);
+                console.log('Total Income:', totalIncome);
+                console.log('Total Expenses:', totalExpenses);
+
+                // Calculate net profit
+                let netProfit = totalIncome - totalExpenses;
+
+                // Update summary cards
+                $('#total_income').text(formatCurrency(totalIncome));
+                $('#total_expenses').text(formatCurrency(totalExpenses));
+                $('#net_profit').text(formatCurrency(netProfit));
+
+                // Update net profit color based on positive/negative
+                if (netProfit >= 0) {
+                    $('#net_profit').css('color', '#1cc88a');
+                } else {
+                    $('#net_profit').css('color', '#e74a3b');
+                }
+
+                // Create summary bar chart after values are updated
+                setTimeout(function() {
+                    createSummaryBarChart();
+                }, 100);
+
+                $('#pnl-chart').html('<canvas id="pnlChartCanvas"></canvas>');
+
+                // Create quarter groupings for x-axis labels
+                let quarterGroups = [];
+                let currentQuarter = null;
+                let monthCounter = 0;
+
+                r.message.forEach(quarter => {
+                    let monthCount = 0;
+                    if (quarter.monthly_data && Array.isArray(quarter.monthly_data) && quarter.monthly_data.length > 0) {
+                        monthCount = quarter.monthly_data.length;
+                    } else {
+                        monthCount = 1;
+                    }
+                    quarterGroups.push({
+                        quarter: quarter.quarter,
+                        startIndex: monthCounter,
+                        count: monthCount
+                    });
+                    monthCounter += monthCount;
+                });
+
+                console.log('Quarter Groups:', quarterGroups);
+
+                // Custom plugin to draw quarter labels below chart
+                const quarterLabelPlugin = {
+                    id: 'quarterLabels',
+                    afterDraw: (chart) => {
+                        const ctx = chart.ctx;
+                        const xAxis = chart.scales.x;
+                        const yAxis = chart.scales.y;
+
+                        ctx.save();
+                        ctx.font = 'bold 13px Arial';
+                        ctx.fillStyle = '#333';
+                        ctx.textAlign = 'center';
+
+                        quarterGroups.forEach(group => {
+                            const startX = xAxis.getPixelForValue(group.startIndex);
+                            const endX = xAxis.getPixelForValue(group.startIndex + group.count - 1);
+                            const centerX = (startX + endX) / 2;
+                            const y = chart.chartArea.bottom + 45;
+
+                            // Draw quarter label
+                            ctx.fillText(group.quarter, centerX, y);
+
+                            // Draw line above quarter label
+                            ctx.strokeStyle = '#999';
+                            ctx.lineWidth = 1;
+                            ctx.beginPath();
+                            ctx.moveTo(startX - 10, y - 15);
+                            ctx.lineTo(endX + 10, y - 15);
+                            ctx.stroke();
+                        });
+
+                        ctx.restore();
+                    }
+                };
+
+                new Chart(document.getElementById("pnlChartCanvas"), {
+                    type: 'bar',
+                    data: {
+                        labels: monthlyLabels,
+                        datasets: [
+                            {
+                                label: 'Income',
+                                data: monthlyIncome,
+                                backgroundColor: '#1cc88a',
+                                borderRadius: 8,
+                                barPercentage: 0.3,
+                                categoryPercentage: 0.9
+                            },
+                            {
+                                label: 'Expense',
+                                data: monthlyExpense,
+                                backgroundColor: '#e74a3b',
+                                borderRadius: 8,
+                                barPercentage: 0.3,
+                                categoryPercentage: 0.9
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: {
+                                bottom: 50
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                formatter: function(value) {
+                                    return value.toLocaleString('en-US', {
+                                        style: 'currency',
+                                        currency: 'PKR',
+                                        minimumFractionDigits: 0,
+                                        maximumFractionDigits: 0
+                                    });
+                                },
+                                font: {
+                                    weight: 'bold',
+                                    size: 8
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.dataset.label + ': ' + context.parsed.y.toLocaleString('en-US', {
+                                            style: 'currency',
+                                            currency: 'PKR'
+                                        });
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value.toLocaleString('en-US', {
+                                            style: 'currency',
+                                            currency: 'PKR',
+                                            minimumFractionDigits: 0,
+                                            maximumFractionDigits: 0
+                                        });
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    autoSkip: false,
+                                    maxRotation: 45,
+                                    minRotation: 0
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels, quarterLabelPlugin]
+                });
+            }
+        });
+    }
+
+    // Load chart on page ready
+    loadPNLChart();
+
+    // Load bank and cash accounts on page ready if company is selected
+    if ($('#company').val()) {
+        loadBankAccounts();
+        loadCashAccounts();
+        loadExpenseAccounts();
+        createSummaryBarChart();
+        loadAccountsPayable();
+        loadAccountsReceivable();
+    }
+
+    // Apply Filters button click
+    $('#apply_filters').on('click', function() {
+        loadPNLChart();
+        loadBankAccounts();
+        loadCashAccounts();
+        loadExpenseAccounts();
+        createSummaryBarChart();
+        loadAccountsPayable();
+        loadAccountsReceivable();
+    });
+
+    // Finance Reports Click Handlers
+    $('.report-item').on('click', function() {
+        const reportName = $(this).data('report');
+        const company = $('#company').val();
+
+        if (!company) {
+            frappe.msgprint('Please select a company first');
+            return;
+        }
+
+        // Map report names to ERPNext report routes
+        const reportRoutes = {
+            'Trial Balance': '/app/query-report/Trial%20Balance',
+            'General Ledger': '/app/query-report/General%20Ledger',
+            'Cash Flow': '/app/query-report/Cash%20Flow',
+            'Expense Report': '/app/query-report/Budget%20Variance%20Report',
+            'Profit & Loss': '/app/query-report/Profit%20and%20Loss%20Statement',
+            'Balance Sheet': '/app/query-report/Balance%20Sheet'
+        };
+
+        const route = reportRoutes[reportName];
+        if (route) {
+            window.open(route + '?company=' + encodeURIComponent(company), '_blank');
+        }
+    });
+
+    // Bank logo mapping
+    const bankLogos = {
+        'HBL': 'https://seeklogo.com/images/H/habib-bank-limited-hbl-logo-4D198259C4-seeklogo.com.png',
+        'UBL': 'https://seeklogo.com/images/U/united-bank-limited-logo-90F0F1E17C-seeklogo.com.png',
+        'MCB': 'https://seeklogo.com/images/M/mcb-bank-logo-4E7AC8F0D8-seeklogo.com.png',
+        'Allied Bank': 'https://seeklogo.com/images/A/allied-bank-limited-logo-B7D891E1C1-seeklogo.com.png',
+        'Meezan Bank': 'https://seeklogo.com/images/M/meezan-bank-logo-49F2684C43-seeklogo.com.png',
+        'Bank Alfalah': 'https://seeklogo.com/images/B/bank-alfalah-logo-10603369E9-seeklogo.com.png',
+        'Standard Chartered': 'https://seeklogo.com/images/S/standard-chartered-logo-84C6E3D902-seeklogo.com.png',
+        'Faysal Bank': 'https://seeklogo.com/images/F/faysal-bank-limited-logo-7F6F3F0E0E-seeklogo.com.png'
+    };
+
+    function getBankLogo(bankName) {
+        if (!bankName) return 'https://via.placeholder.com/50?text=Bank';
+
+        for (let bank in bankLogos) {
+            if (bankName.toLowerCase().includes(bank.toLowerCase())) {
+                return bankLogos[bank];
+            }
+        }
+        return 'https://via.placeholder.com/50?text=' + bankName.charAt(0);
+    }
+
+    let allBanks = [];
+    let displayedBanks = 0;
+    const banksPerPage = 10;
+
+    function loadBankAccounts() {
+        const company = $('#company').val();
+        if (!company) {
+            $('#bank-accounts-list').html('<div class="loading-message">Please select a company</div>');
+            return;
+        }
+
+        $('#bank-accounts-list').html('<div class="loading-message">Loading bank accounts...</div>');
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api_finance_dashboard.get_bank_accounts",
+            args: { company },
+            callback: function(r) {
+                console.log('Bank accounts response:', r);
+                if (!r.message || r.message.length === 0) {
+                    $('#bank-accounts-list').html('<div class="loading-message">No bank accounts found</div>');
+                    $('#load-more-banks').hide();
+                    return;
+                }
+
+                allBanks = r.message;
+                displayedBanks = 0;
+                $('#bank-accounts-list').html('');
+                displayBanks();
+            },
+            error: function(err) {
+                console.error('Error loading bank accounts:', err);
+                $('#bank-accounts-list').html('<div class="loading-message">Error loading bank accounts</div>');
+                $('#load-more-banks').hide();
+            }
+        });
+    }
+
+    function displayBanks() {
+        const end = Math.min(displayedBanks + banksPerPage, allBanks.length);
+
+        for (let i = displayedBanks; i < end; i++) {
+            const account = allBanks[i];
+            const balance = account.balance || 0;
+            const balanceClass = balance >= 0 ? '' : 'negative';
+            const logo = getBankLogo(account.bank_name || account.bank);
+
+            const card = `
+                <div class="account-card">
+                    <img src="${logo}" alt="${account.bank_name || 'Bank'}" class="bank-logo" onerror="this.src='https://via.placeholder.com/50?text=Bank'">
+                    <div class="account-info">
+                        <div class="account-name">${account.bank_name || account.account_name}</div>
+                        <div class="account-number">${account.account_number || 'N/A'}</div>
+                        <div class="account-balance ${balanceClass}">${formatCurrency(Math.abs(balance))}</div>
+                    </div>
+                </div>
+            `;
+            $('#bank-accounts-list').append(card);
+        }
+
+        displayedBanks = end;
+
+        if (displayedBanks >= allBanks.length) {
+            $('#load-more-banks').hide();
+        } else {
+            $('#load-more-banks').show();
+        }
+    }
+
+    $('#load-more-banks').on('click', function() {
+        displayBanks();
+    });
+
+    let allCash = [];
+    let displayedCash = 0;
+    const cashPerPage = 10;
+
+    function loadCashAccounts() {
+        const company = $('#company').val();
+        if (!company) {
+            $('#cash-accounts-list').html('<div class="loading-message">Please select a company</div>');
+            return;
+        }
+
+        $('#cash-accounts-list').html('<div class="loading-message">Loading cash accounts...</div>');
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api_finance_dashboard.get_cash_accounts",
+            args: { company },
+            callback: function(r) {
+                console.log('Cash accounts response:', r);
+                if (!r.message || r.message.length === 0) {
+                    $('#cash-accounts-list').html('<div class="loading-message">No cash accounts found</div>');
+                    $('#load-more-cash').hide();
+                    return;
+                }
+
+                allCash = r.message;
+                displayedCash = 0;
+                $('#cash-accounts-list').html('');
+                displayCash();
+            },
+            error: function(err) {
+                console.error('Error loading cash accounts:', err);
+                $('#cash-accounts-list').html('<div class="loading-message">Error loading cash accounts</div>');
+                $('#load-more-cash').hide();
+            }
+        });
+    }
+
+    function displayCash() {
+        const end = Math.min(displayedCash + cashPerPage, allCash.length);
+
+        for (let i = displayedCash; i < end; i++) {
+            const account = allCash[i];
+            const balance = account.balance || 0;
+            const balanceClass = balance >= 0 ? '' : 'negative';
+
+            const card = `
+                <div class="account-card">
+                    <div class="cash-icon">₨</div>
+                    <div class="account-info">
+                        <div class="account-name">${account.account_name}</div>
+                        <div class="account-number">${account.account_number || 'Cash Account'}</div>
+                        <div class="account-balance ${balanceClass}">${formatCurrency(Math.abs(balance))}</div>
+                    </div>
+                </div>
+            `;
+            $('#cash-accounts-list').append(card);
+        }
+
+        displayedCash = end;
+
+        if (displayedCash >= allCash.length) {
+            $('#load-more-cash').hide();
+        } else {
+            $('#load-more-cash').show();
+        }
+    }
+
+    $('#load-more-cash').on('click', function() {
+        displayCash();
+    });
+
+    // Expense Accounts
+    let allExpense = [];
+    let displayedExpense = 0;
+    const expensePerPage = 10;
+
+    function loadExpenseAccounts() {
+        const company = $('#company').val();
+        if (!company) {
+            $('#expense-accounts-list').html('<div class="loading-message">Please select a company</div>');
+            return;
+        }
+
+        $('#expense-accounts-list').html('<div class="loading-message">Loading expense accounts...</div>');
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api_finance_dashboard.get_expense_accounts",
+            args: { company },
+            callback: function(r) {
+                console.log('Expense accounts response:', r);
+                if (!r.message || r.message.length === 0) {
+                    $('#expense-accounts-list').html('<div class="loading-message">No expense accounts found</div>');
+                    $('#load-more-expense').hide();
+                    createExpenseDonutChart([]);
+                    return;
+                }
+
+                allExpense = r.message;
+                displayedExpense = 0;
+                $('#expense-accounts-list').html('');
+                displayExpense();
+                createExpenseDonutChart(allExpense.slice(0, 5)); // Top 5 for chart
+            },
+            error: function(err) {
+                console.error('Error loading expense accounts:', err);
+                $('#expense-accounts-list').html('<div class="loading-message">Error loading expense accounts</div>');
+                $('#load-more-expense').hide();
+            }
+        });
+    }
+
+    function displayExpense() {
+        const end = Math.min(displayedExpense + expensePerPage, allExpense.length);
+
+        for (let i = displayedExpense; i < end; i++) {
+            const account = allExpense[i];
+            const balance = account.balance || 0;
+            const balanceClass = balance >= 0 ? '' : 'negative';
+
+            const card = `
+                <div class="account-card">
+                    <div class="account-info">
+                        <div class="account-name">${account.account_name}</div>
+                        <div class="account-balance ${balanceClass}">${formatCurrency(Math.abs(balance))}</div>
+                    </div>
+                </div>
+            `;
+            $('#expense-accounts-list').append(card);
+        }
+
+        displayedExpense = end;
+
+        if (displayedExpense >= allExpense.length) {
+            $('#load-more-expense').hide();
+        } else {
+            $('#load-more-expense').show();
+        }
+    }
+
+    $('#load-more-expense').on('click', function() {
+        displayExpense();
+    });
+
+    // Summary Bar Chart
+    function createSummaryBarChart() {
+        const incomeText = $('#total_income').text().replace(/₨|,|\s/g, '');
+        const expenseText = $('#total_expenses').text().replace(/₨|,|\s/g, '');
+        const income = parseFloat(incomeText) || 0;
+        const expense = parseFloat(expenseText) || 0;
+
+        const ctx = document.getElementById('summary-bar-chart');
+        if (!ctx) return;
+
+        if (window.summaryBarChartInstance) {
+            window.summaryBarChartInstance.destroy();
+        }
+
+        window.summaryBarChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Income', 'Expense'],
+                datasets: [{
+                    data: [income, expense],
+                    backgroundColor: function(context) {
+                        const index = context.dataIndex;
+                        return index === 0 ? '#1cc88a' : '#e74a3b'; // Green for income, Red for expense
+                    },
+                    borderRadius: 4,
+                    barThickness: 25
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return formatCurrency(context.parsed.x);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            display: true,
+                            font: { size: 9 },
+                            callback: function(value) {
+                                return '₨ ' + (value / 1000).toFixed(0) + 'K';
+                            }
+                        },
+                        grid: {
+                            display: true,
+                            color: '#eee'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            font: { size: 11 },
+                            color: '#333'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Expense Donut Chart
+    function createExpenseDonutChart(expenses) {
+        const ctx = document.getElementById('expense-donut-chart');
+        if (!ctx) return;
+
+        if (window.expenseDonutChartInstance) {
+            window.expenseDonutChartInstance.destroy();
+        }
+
+        if (!expenses || expenses.length === 0) {
+            return;
+        }
+
+        const top5 = expenses.slice(0, 5);
+        const labels = top5.map(e => e.account_name.substring(0, 25));
+        const data = top5.map(e => Math.abs(e.balance || 0));
+
+        // Generate different colors for each expense account
+        const colors = [
+            '#e74a3b',  // Red
+            '#f6c23e',  // Yellow
+            '#4e73df',  // Blue
+            '#1cc88a',  // Green
+            '#36b9cc',  // Cyan
+            '#6f42c1',  // Purple
+            '#fd7e14',  // Orange
+            '#e83e8c',  // Pink
+            '#20c997',  // Teal
+            '#6c757d'   // Gray
+        ];
+
+        // Use different color for each account
+        const accountColors = top5.map((e, index) => colors[index % colors.length]);
+
+        window.expenseDonutChartInstance = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: accountColors,
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: { size: 9 },
+                            boxWidth: 10,
+                            padding: 8,
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map((label, i) => {
+                                        const value = data.datasets[0].data[i];
+                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return {
+                                            text: label + ' (' + percentage + '%)',
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            hidden: false,
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    datalabels: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = formatCurrency(context.parsed);
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return label + ': ' + value + ' (' + percentage + '%)';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Combined AR/AP data
+    let apData = null;
+    let arData = null;
+
+    // Accounts Payable
+    function loadAccountsPayable() {
+        const company = $('#company').val();
+        if (!company) return;
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api_finance_dashboard.get_accounts_payable",
+            args: { company },
+            callback: function(r) {
+                if (!r.message) return;
+                apData = r.message;
+                createCombinedARAPChart();
+            }
+        });
+    }
+
+    // Accounts Receivable
+    function loadAccountsReceivable() {
+        const company = $('#company').val();
+        if (!company) return;
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api_finance_dashboard.get_accounts_receivable",
+            args: { company },
+            callback: function(r) {
+                if (!r.message) return;
+                arData = r.message;
+                createCombinedARAPChart();
+            }
+        });
+    }
+
+    function createCombinedARAPChart() {
+        if (!apData || !arData) return;
+
+        const ctx = document.getElementById('ar-ap-combined-chart');
+        if (!ctx) return;
+
+        if (window.arAPCombinedChartInstance) {
+            window.arAPCombinedChartInstance.destroy();
+        }
+
+        const labels = ['0-30 Days', '31-60 Days', '61-90 Days', '91-120 Days', '120+ Days'];
+
+        const apValues = [
+            apData['0-30'] || 0,
+            apData['31-60'] || 0,
+            apData['61-90'] || 0,
+            apData['91-120'] || 0,
+            apData['120+'] || 0
+        ];
+
+        const arValues = [
+            arData['0-30'] || 0,
+            arData['31-60'] || 0,
+            arData['61-90'] || 0,
+            arData['91-120'] || 0,
+            arData['120+'] || 0
+        ];
+
+        window.arAPCombinedChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Accounts Payable',
+                        data: apValues,
+                        backgroundColor: '#e74a3b',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Accounts Receivable',
+                        data: arValues,
+                        backgroundColor: '#1cc88a',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: { font: { size: 12 } }
+                    },
+                    datalabels: {
+                        display: true,
+                        anchor: 'end',
+                        align: 'top',
+                        formatter: function(value) {
+                            if (value === 0) return '';
+                            return '₨ ' + (value / 1000).toFixed(0) + 'K';
+                        },
+                        font: {
+                            weight: 'bold',
+                            size: 10
+                        },
+                        color: '#333'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '₨ ' + (value / 1000).toFixed(0) + 'K';
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            },
+            plugins: [ChartDataLabels]
+        });
+    }
+
+});
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,904 @@
+﻿{% extends "templates/web.html" %}
+
+{% block page_content %}
+<div class="dashboard-wrapper">
+    <div class="dashboard-header">
+        <h1>Parts Store Dashboard</h1>
+        <div class="header-decoration"></div>
+    </div>
+
+    <div class="filter-container">
+       <!--  <div class="filter-group">
+            <label for="tehsil">Tehsil</label>
+            <select id="tehsil">
+                <option value=""></option>
+                <option value="Wazirabad">Wazirabad</option>
+                <option value="Gujranwala">Gujranwala</option>
+                <option value="Sarai Alamgir">Sarai Alamgir</option>
+                <option value="Sukkur">Sukkur</option>
+            </select>
+        </div> -->
+        
+        <div class="filter-group">
+            <label for="from_date">From Date</label>
+            <input type="date" id="from_date" />
+        </div>
+        
+        <div class="filter-group">
+            <label for="to_date">To Date</label>
+            <input type="date" id="to_date" />
+        </div>
+
+        <button id="apply_filters" class="filter-btn">
+            <span class="btn-icon-search"></span> Filter
+        </button>
+    </div>
+
+    <div class="dashboard">
+        <a href="/app/external-employee-attendance">
+            <div class="card primary-card">
+                <div class="card-icon workforce-icon"></div>
+                <div class="card-content">
+                    <h2>Demand Summary</h2>
+                    <div class="value" id="get_cout_mr_se">Loading...</div>
+                </div>
+            </div>
+        </a>
+        
+        <a href="/app/location">
+            <div class="card secondary-card">
+                <div class="card-icon target-icon"></div>
+                <div class="card-content">
+                    <h2 lass="sub-metric">Total Expesence</h2>
+                    <div class="value" id="total_target">Loading...</div>
+                    <h2 class="sub-metric">Average Per Vehicle</h2>
+                    <div class="value" id="avg_per_vehicle">Loading...0 PKR / Vehicle</div>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="charts-section">
+        <div class="section-header">
+            <h2>Analytics Overview</h2>
+            <div class="section-decoration"></div>
+        </div>
+        
+        <main class="dashboard-grid">
+            <div class="grid-item card chart-card">
+                <div class="card-header">
+                    <h3>Daily Summary of Spare Parts Demand, Issueance Fullfilment</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="mr_se_chart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="tables-container">
+        <div class="table-section">
+            <div class="section-header">
+                <h2>Shortage Stocks</h2>
+                <div class="section-decoration"></div>
+            </div>
+            
+            <div class="table-container">
+                <div id="shortage_list_box">
+                    <table>
+                        <thead>
+                           
+                            <tr>
+                                <th>Part Name</th>
+                                <th>Required Qty</th>
+                                <th>Stock in Hand</th>
+                                <th>Shortage</th>
+                            </tr>
+                        </thead>
+                        <tbody id="shortage_list_body">
+                            <tr><td colspan="4" class="loading-row">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <button id="load_more" class="load-more-btn">
+                    <span class="btn-text">Load 10 More</span>
+                    <span class="btn-icon-arrow"></span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Material Transfer Table -->
+        <div class="table-section">
+            <div class="section-header">
+                <h2>Scrap Store & Disposal</h2>
+                <div class="section-decoration"></div>
+            </div>
+            <div class="table-container">
+                <div id="transfer_list_box">
+                    <table>
+                        <thead>
+                           
+                            <tr>
+                                <th>Description</th>
+                                <th>Remarks</th>
+                                <th>Posting Date</th>
+                                <th>Owner</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transfer_list_body">
+                            <tr><td colspan="5" class="loading-row">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button id="load_more_transfer" class="load-more-btn">
+                    <span class="btn-text">Load 10 More</span>
+                    <span class="btn-icon-arrow"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+
+    .page-content-wrapper,
+       .page-content,
+   .container {
+        max-width: 100% !important;
+       width: 100% !important;
+          padding-left: 0 !important;
+           padding-right: 0 !important;
+      margin: 0 !important;
+    }
+  
+     .web-footer {
+          display: none !important;
+   }
+    :root {
+        --primary-color: #0321e6;
+        --secondary-color: #4a5bff;
+        --accent-color: #ff7b54;
+        --success-color: #00c896;
+        --warning-color: #ffcc00;
+        --danger-color: #ff4757;
+        --light-color: #f5f9ff;
+        --dark-color: #1e293b;
+        --text-color: #333;
+        --border-radius: 16px;
+        --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+        margin: 0;
+        font-family: 'Inter', sans-serif;
+        background: linear-gradient(135deg, #f5f9ff 0%, #e6f0ff 100%);
+        color: var(--text-color);
+/*        line-height: 1.6;*/
+    }
+
+    .dashboard-wrapper {
+/*        max-width: 100%;*/
+/*        margin: 0 auto;*/
+/*        padding: 20px;*/
+    }
+
+    .dashboard-header {
+        position: relative;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .dashboard-header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin: 0;
+        padding: 20px 0;
+        position: relative;
+        z-index: 1;
+    }
+
+    .header-decoration {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        border-radius: 2px;
+    }
+
+    .section-header {
+        position: relative;
+        margin: 40px 0 20px;
+        padding-left: 15px;
+    }
+
+    .section-header h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--dark-color);
+        margin: 0;
+    }
+
+    .section-decoration {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 30px;
+        background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+        border-radius: 3px;
+    }
+
+    .filter-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin: 30px 0;
+        padding: 25px;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--dark-color);
+        font-size: 0.9rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        padding: 12px 15px;
+        border: 2px solid #e1e8ed;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background: white;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(3, 33, 230, 0.1);
+    }
+
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        align-self: flex-end;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: 0 4px 15px rgba(3, 33, 230, 0.3);
+    }
+
+    .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(3, 33, 230, 0.4);
+    }
+
+    .btn-icon-search {
+        width: 16px;
+        height: 16px;
+        position: relative;
+        display: inline-block;
+    }
+
+    .btn-icon-search:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 12px;
+        height: 12px;
+        border: 2px solid white;
+        border-radius: 50%;
+    }
+
+    .btn-icon-search:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        right: -2px;
+        width: 6px;
+        height: 6px;
+        background: white;
+        transform: rotate(45deg);
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin: 40px 0;
+    }
+
+    .card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        transition: var(--transition);
+        display: flex;
+        position: relative;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        position: relative;
+    }
+
+    .workforce-icon:before {
+        content: '';
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    }
+
+    .workforce-icon:after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 25px;
+        background: white;
+        border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+        bottom: 10px;
+    }
+
+    .target-icon:before {
+        content: '';
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        border: 4px solid white;
+        border-radius: 50%;
+    }
+
+    .target-icon:after {
+        content: '';
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: white;
+        border-radius: 50%;
+    }
+
+    .card-content {
+        flex: 1;
+        padding: 20px;
+    }
+
+    .primary-card .card-icon {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .secondary-card .card-icon {
+        background: linear-gradient(135deg, var(--accent-color), #ff9a76);
+    }
+
+    .card h2 {
+        font-size: 1rem;
+        color: #64748b;
+        margin: 0 0 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card .sub-metric {
+        font-size: 0.85rem;
+        margin-top: 15px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+    }
+
+    .card .value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin: 5px 0;
+    }
+
+    .charts-section {
+        margin: 40px 0;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 25px;
+    }
+
+    .chart-card {
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 20px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 20px;
+        height: 300px;
+        position: relative;
+    }
+
+    .tables-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 25px;
+        margin: 40px 0;
+    }
+
+    .table-section {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+    }
+
+    .table-container {
+        padding: 0;
+    }
+
+    #shortage_list_box, #transfer_list_box {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    thead {
+        position: sticky;
+        top: 0;
+        background: var(--primary-color);
+        color: white;
+        z-index: 10;
+    }
+
+    th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .table-title {
+        text-align: center;
+        font-size: 1.2rem;
+        background: var(--dark-color);
+    }
+
+    td {
+        padding: 12px 15px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    tbody tr {
+        transition: var(--transition);
+    }
+
+    tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .loading-row {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #999;
+    }
+
+    .load-more-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 15px;
+        background: white;
+        border: none;
+        border-top: 1px solid #eee;
+        cursor: pointer;
+        font-weight: 600;
+        color: var(--primary-color);
+        transition: var(--transition);
+    }
+
+    .load-more-btn:hover {
+        background: #f8f9fa;
+    }
+
+    .btn-icon-arrow {
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-top: 8px solid var(--primary-color);
+        transition: var(--transition);
+    }
+
+    .load-more-btn:hover .btn-icon-arrow {
+        transform: translateY(2px);
+    }
+
+    @media (max-width: 1200px) {
+        .tables-container {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 1000px) {
+        .dashboard {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .web-footer {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+        }
+        
+        .filter-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+        
+        .filter-btn {
+            align-self: stretch;
+            margin-top: 10px;
+        }
+        
+        .web-footer {
+            display: none !important;
+        }
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/assets/fleet_igl/js/jquery-3.6.0.min.js"></script>
+<script src="/assets/fleet_igl/js/chart.js"></script>
+<script src="/assets/fleet_igl/js/graph.js"></script>
+<script src="/assets/fleet_igl/js/chartjs-plugin-datalabels@2.0.0.0"></script>
+
+<script>
+    // Initialize date inputs with yesterday's date
+      const today = new Date();
+
+    // From date = 60 days before today
+    const fromDate = new Date(today);
+    fromDate.setDate(today.getDate() - 60);
+
+    // Format dates as YYYY-MM-DD
+    const formatDate = (date) => date.toISOString().split('T')[0];
+
+    document.getElementById('from_date').value = formatDate(fromDate);
+    document.getElementById('to_date').value = formatDate(today);
+
+    // Dashboard Data Management
+    const DashboardManager = {
+        init: function() {
+            this.setupEventListeners();
+            this.loadAllData();
+        },
+
+        setupEventListeners: function() {
+            const filterBtn = document.getElementById("apply_filters");
+            if (filterBtn) {
+                filterBtn.addEventListener("click", () => this.loadAllData());
+            }
+
+            const loadMoreBtn = document.getElementById("load_more");
+            if (loadMoreBtn) {
+                loadMoreBtn.addEventListener("click", () => this.loadMoreShortageData());
+            }
+
+            const loadMoreTransferBtn = document.getElementById("load_more_transfer");
+            if (loadMoreTransferBtn) {
+                loadMoreTransferBtn.addEventListener("click", () => this.loadMoreTransferData());
+            }
+        },
+
+        loadAllData: function() {
+            this.loadFuelData();
+            this.loadTargetData();
+            this.loadMRSEChart();
+            this.loadShortageData();
+            this.loadTransferData();
+        },
+
+        loadFuelData: function() {
+            const output = document.getElementById("get_cout_mr_se");
+            const from_date = document.getElementById("from_date").value;
+            const to_date = document.getElementById("to_date").value;
+
+            frappe.call({
+                method: "mas_theme.dashboad_api.api_for_stock.get_pending_complete_counts",
+                args: { from_date, to_date },
+                callback: function (r) {
+                    if (r.message) {
+                        const data = r.message;
+                        output.innerHTML = `
+                            <div><b>Pending:</b> ${data.pending}</div>
+                            <div><b>Complete:</b> ${data.complete}</div>
+                            <div><b>Not Cancelled:</b> ${data.not_cancelled}</div>
+                        `;
+                    } else {
+                        output.innerHTML = "0";
+                    }
+                }
+            });
+        },
+
+        loadTargetData: function() {
+            const totalTargetEl = document.getElementById("total_target");
+            const avgPerVehicleEl = document.getElementById("avg_per_vehicle");
+            const from_date = document.getElementById("from_date").value;
+            const to_date = document.getElementById("to_date").value;
+
+            frappe.call({
+                method: "mas_theme.dashboad_api.api_for_stock.get_material_issue_vehicle_avg",
+                args: { from_date, to_date },
+                callback: function (r) {
+                    if (r.message) {
+                        const total = r.message.total_amount || 0;
+                        const avg = r.message.amount_per_vehicle || 0;
+
+                        totalTargetEl.textContent = Number(total).toLocaleString() + " PKR";
+                        
+                        if (avgPerVehicleEl) {
+                            avgPerVehicleEl.textContent = Number(avg).toLocaleString() + " PKR / Vehicle";
+                        }
+                    } else {
+                        totalTargetEl.textContent = "0 PKR";
+                        if (avgPerVehicleEl) {
+                            avgPerVehicleEl.textContent = "0 PKR / Vehicle";
+                        }
+                    }
+                }
+            });
+        },
+
+        loadMRSEChart: function() {
+            const from_date = $("#from_date").val();
+            const to_date = $("#to_date").val();
+
+            frappe.call({
+                method: "mas_theme.dashboad_api.api_for_stock.get_pending_complete_counts_datewise",
+                args: { from_date: from_date || null, to_date: to_date || null },
+                callback: function (r) {
+                    if (!r.message || !r.message.length) {
+                        console.warn("No date-wise MR/SE data");
+                        return;
+                    }
+
+                    const labels = r.message.map(row => row.date);
+                    const pending = r.message.map(row => row.pending || 0);
+                    const complete = r.message.map(row => row.complete || 0);
+                    const total = r.message.map(row => row.not_cancelled || 0);
+
+                    if (window.mrSeLineChart instanceof Chart) {
+                        window.mrSeLineChart.destroy();
+                    }
+
+                    const ctx = document.getElementById("mr_se_chart").getContext("2d");
+
+                    window.mrSeLineChart = new Chart(ctx, {
+                        type: "line",
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: "Pending",
+                                    data: pending,
+                                    borderColor: "black",
+                                    tension: 0.3,
+                                    fill: false
+                                },
+                                {
+                                    label: "Complete",
+                                    data: complete,
+                                    borderColor: "blue",
+                                    tension: 0.3,
+                                    fill: false
+                                },
+                                {
+                                    label: "Total",
+                                    data: total,
+                                    borderColor: "green",
+                                    tension: 0.3,
+                                    fill: false
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: true }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: "Count"
+                                    }
+                                },
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: "Date"
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+        },
+
+        // Shortage Data Management
+        shortageData: [],
+        displayedCountShortage: 0,
+        batchSize: 10,
+
+        loadShortageData: function() {
+            const tbody = document.getElementById("shortage_list_body");
+            const from_date = document.getElementById("from_date").value;
+            const to_date = document.getElementById("to_date").value;
+
+            tbody.innerHTML = `<tr><td colspan="4" class="loading-row">Loading...</td></tr>`;
+
+            frappe.call({
+                method: "mas_theme.dashboad_api.api_for_stock.get_item_shortage_summary",
+                args: { from_date, to_date },
+                callback: (r) => {
+                    this.shortageData = r.message || [];
+                    this.displayedCountShortage = 0;
+                    tbody.innerHTML = '';
+                    this.renderShortageList();
+                }
+            });
+        },
+
+        renderShortageList: function() {
+            const tbody = document.getElementById("shortage_list_body");
+            let end = this.displayedCountShortage + this.batchSize;
+            const itemsToShow = this.shortageData.slice(this.displayedCountShortage, end);
+
+            itemsToShow.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.item_name}</td>
+                    <td style="text-align:right;">${row.required_qty}</td>
+                    <td style="text-align:right;">${row.stock_in_hand}</td>
+                    <td style="text-align:right; color: ${row.shortage_qty > 0 ? 'var(--danger-color)' : 'var(--success-color)'};">
+                        ${row.shortage_qty}
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            this.displayedCountShortage += itemsToShow.length;
+            document.getElementById("load_more").style.display = 
+                this.displayedCountShortage >= this.shortageData.length ? 'none' : 'flex';
+        },
+
+        loadMoreShortageData: function() {
+            this.renderShortageList();
+        },
+
+        // Transfer Data Management
+        transferData: [],
+        displayedCountTransfer: 0,
+        batchSizeTransfer: 10,
+
+        loadTransferData: function() {
+            const tbody = document.getElementById("transfer_list_body");
+            const from_date = document.getElementById("from_date").value;
+            const to_date = document.getElementById("to_date").value;
+
+            tbody.innerHTML = `<tr><td colspan="5" class="loading-row">Loading...</td></tr>`;
+
+            frappe.call({
+                method: "mas_theme.dashboad_api.api_for_stock.get_material_transfer_scrap_draft",
+                args: { from_date, to_date },
+                callback: (r) => {
+                    this.transferData = r.message || [];
+                    this.displayedCountTransfer = 0;
+                    tbody.innerHTML = '';
+                    this.renderTransferList();
+                }
+            });
+        },
+
+        renderTransferList: function() {
+            const tbody = document.getElementById("transfer_list_body");
+            let end = this.displayedCountTransfer + this.batchSizeTransfer;
+            const itemsToShow = this.transferData.slice(this.displayedCountTransfer, end);
+
+            itemsToShow.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.description}</td>
+                    <td>${row.remarks}</td>
+                    <td>${row.posting_date}</td>
+                    <td>${row.owner}</td>
+                    <td style="text-align:right;">${row.amount}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            this.displayedCountTransfer += itemsToShow.length;
+            document.getElementById("load_more_transfer").style.display = 
+                this.displayedCountTransfer >= this.transferData.length ? 'none' : 'flex';
+        },
+
+        loadMoreTransferData: function() {
+            this.renderTransferList();
+        }
+    };
+
+    // Initialize dashboard when document is ready
+    frappe.ready(function() {
+        DashboardManager.init();
+    });
+</script>
+
+{% endblock %}

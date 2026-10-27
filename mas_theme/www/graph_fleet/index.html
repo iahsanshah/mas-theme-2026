@@ -1,0 +1,963 @@
+﻿{% extends "templates/web.html" %}
+
+{% block page_content %}
+
+<div class="dashboard-wrapper">
+
+    <div class="filter-container">
+        <div class="filter-group">
+            <label for="tehsil">Tehsil</label>
+            <select id="tehsil">
+                <option value=""></option>
+                <option value="Wazirabad">Wazirabad</option>
+                <option value="Gujranwala">Gujranwala</option>
+                <option value="Sarai Alamgir">Sarai Alamgir</option>
+                <option value="Sukkur">Sukkur</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="from_date">From Date</label>
+            <input type="date" id="from_date" />
+        </div>
+
+        <div class="filter-group">
+            <label for="to_date">To Date</label>
+            <input type="date" id="to_date" />
+        </div>
+
+        <button id="apply_filters" class="filter-btn">
+            Apply Filters
+        </button>
+    </div>
+<h2>Fleet Operational Dashboard</h2>
+    <div class="dashboard">
+        <a href="/app/external-employee-attendance">
+            <div class="card primary-card">
+                <div class="card-icon workforce-icon"></div>
+                <div class="card-content">
+                    <h2>Active Workforce</h2>
+                    <div class="value" id="get_external_employee">Loading...</div>
+                </div>
+            </div>
+        </a>
+        <a href="/app/location">
+            <div class="card primary-card">
+                <div class="card-icon target-icon"></div>
+                <div class="card-content">
+                    <h2>Total Target Tonnage</h2>
+                    <div class="value" id="total_target_ton">Loading...</div>
+                </div>
+            </div>
+        </a>
+        <a href="/app/vehicle-visit-details">
+            <div class="card primary-card">
+                <div class="card-icon"></div>
+                <div class="card-content">
+                    <h2>Total Collected</h2>
+                    <div class="value" id="total_waste">Loading...</div>
+                </div>
+            </div>
+        </a>
+        <div class="card primary-card">
+            <div class="card-icon"></div>
+            <div class="card-content">
+                <h2>Total Remaining</h2>
+                <div class="value" id="total_remain_ton">Loading...</div>
+            </div>
+        </div>
+        <a href="/app/daily-fuel-log">
+            <div class="card primary-card">
+                <div class="card-icon"></div>
+                <div class="card-content">
+                    <h2>Total Fuel</h2>
+                    <div class="value" id="total_fuel">Loading...</div>
+                </div>
+            </div>
+        </a>
+        <a href="/app/daily-fuel-log?fuel_type=Diesel">
+            <div class="card primary-card">
+                <div class="card-icon"></div>
+                <div class="card-content">
+                    <h2>Total Diesel</h2>
+                    <div class="value" id="total_get_diesel">Loading...</div>
+                </div>
+            </div>
+        </a>
+        <a href="/app/daily-fuel-log?fuel_type=Petrol">
+            <div class="card primary-card">
+                <div class="card-icon"></div>
+                <div class="card-content">
+                    <h2>Total Petrol</h2>
+                    <div class="value" id="total_get_petrol">Loading...</div>
+                </div>
+            </div>
+        </a>
+        <a href="/app/vehicle">
+            <div class="card primary-card">
+                <div class="card-icon"></div>
+                <div class="card-content">
+                    <h2>Total Vehicles</h2>
+                    <div class="value" id="total_get_vehicle">Loading...</div>
+                </div>
+            </div>
+        </a>
+        <div class="card primary-card">
+            <div class="card-icon"></div>
+            <div class="card-content">
+                <h2>Active Vehicles</h2>
+                <div class="value" id="get_active_vehicles">Loading...</div>
+            </div>
+        </div>
+        <div class="card primary-card">
+            <div class="card-icon"></div>
+            <div class="card-content">
+                <h2>In-Active Vehicles</h2>
+                <div class="value" id="get_inactive">Loading...</div>
+            </div>
+        </div>
+        <div class="card primary-card">
+            <div class="card-icon"></div>
+            <div class="card-content">
+                <h2>Total Milage</h2>
+                <div class="value" id="get_milage">Loading...</div>
+            </div>
+        </div>
+        <div class="card primary-card">
+            <div class="card-icon"></div>
+            <div class="card-content">
+                <h2>Working Hours</h2>
+                <div class="value" id="get_working_hours">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section">
+        <div class="dashboard-grid">
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>Used Fuel</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="fuel_chart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>Waste Tonnage</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="total_waste_tons"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>Mileage</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="mileage_chart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>Working Hours</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="working_hours_chart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>Vehicle Status</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="vehicle_status_chart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="card-header">
+                    <h3>Fuel Breakdown</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="fuel_breakdown_chart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card" style="grid-column: span 2;">
+                <div class="card-header">
+                    <h3>Target vs Net Tonnage</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="target_tonnage_chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    :root {
+        --primary: #4e73df;
+        --primary-light: #7a9ff7;
+        --primary-dark: #2a4bae;
+        --secondary: #1cc88a;
+        --danger: #e74a3b;
+        --warning: #f6c23e;
+        --info: #36b9cc;
+        --dark: #5a5c69;
+        --light: #f8f9fc;
+        --gray: #d1d3e2;
+        --gray-dark: #b7b9cc;
+        --white: #fff;
+        --shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        --transition: all 0.2s ease;
+        --border-radius: 8px;
+
+        --primary-color: #0321e6;
+        --secondary-color: #00c896;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fb;
+        color: #333;
+    }
+
+    /* Override Frappe's default container width */
+    .page-content-wrapper,
+    .page-content,
+    .container {
+        max-width: 100% !important;
+        width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin: 0 !important;
+    }
+
+    .web-footer {
+        display: none !important;
+    }
+
+    .dashboard-wrapper {
+        width: 99%;
+        max-width: 99%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .filter-container {
+        background-color: #f7f7f7;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        gap: 16px;
+        justify-content: flex-end;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 15px 20px;
+        flex-wrap: wrap;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+        min-width: 150px;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        margin-bottom: 4px;
+        color: #333;
+        font-size: 0.9rem;
+    }
+
+    .filter-group select,
+    .filter-group input {
+        padding: 8px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 14px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        background: white;
+        font-family: 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .filter-group select:hover {
+        border-color: #9ca3af;
+    }
+
+    .filter-group select:focus,
+    .filter-group input:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+
+    .filter-btn {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .filter-btn:hover {
+        background-color: #0056b3;
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+    }
+
+    .card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: var(--transition);
+        display: flex;
+        position: relative;
+        text-decoration: none;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        position: relative;
+    }
+
+    .workforce-icon:before {
+        content: '';
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    }
+
+    .workforce-icon:after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 25px;
+        background: white;
+        border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+        bottom: 10px;
+    }
+
+    .target-icon:before {
+        content: '';
+        position: absolute;
+        width: 35px;
+        height: 35px;
+        border: 4px solid white;
+        border-radius: 50%;
+    }
+
+    .target-icon:after {
+        content: '';
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        background: white;
+        border-radius: 50%;
+    }
+
+    .card-content {
+        flex: 1;
+        padding: 20px;
+    }
+
+    .primary-card .card-icon {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .card h2 {
+        font-size: 0.9rem;
+        color: #64748b;
+        margin: 0 0 8px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .card .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #333;
+        margin: 5px 0;
+    }
+
+    .charts-section {
+        margin: 30px 0;
+    }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 15px 20px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 20px;
+        height: 280px;
+        position: relative;
+    }
+
+    @media (max-width: 1000px) {
+        .dashboard {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .chart-card[style*="span 2"] {
+            grid-column: span 1;
+        }
+
+        .web-footer {
+            display: none !important;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-container {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .filter-btn {
+            align-self: stretch;
+            margin-top: 10px;
+        }
+
+        .web-footer {
+            display: none !important;
+        }
+    }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/assets/fleet_igl/js/jquery-3.6.0.min.js"></script>
+<script src="/assets/fleet_igl/js/chart.js"></script>
+<script src="/assets/fleet_igl/js/graph.js"></script>
+<script src="/assets/fleet_igl/js/chartjs-plugin-datalabels@2.0.0.0"></script>
+<script>
+    // Set default date to yesterday
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    document.getElementById('from_date').value = yesterday.toISOString().split('T')[0];
+    document.getElementById('to_date').value = yesterday.toISOString().split('T')[0];
+
+    // Helper function to format numbers
+    function formatNumber(num) {
+        if (num === undefined || num === null) return '0';
+        return Number(num).toLocaleString();
+    }
+
+    // Load all data on page load
+    $(document).ready(function() {
+        loadAllData();
+
+        $('#apply_filters').click(function() {
+            loadAllData();
+        });
+    });
+
+    function loadAllData() {
+        loadStats();
+        loadFuelChart();
+        loadWasteChart();
+        loadMileageChart();
+        loadWorkingHoursChart();
+        loadVehicleStatusChart();
+        loadFuelBreakdownChart();
+        loadTonnageChart();
+    }
+
+    function loadStats() {
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+        const tehsil = $('#tehsil').val();
+
+        // Load individual stats
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_external_em",
+            args: { from_date, to_date },
+            callback: function(r) {
+                $('#get_external_employee').text(formatNumber(r.message));
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.total_target_tonange",
+            args: { from_date, to_date, tehsil },
+            callback: function(r) {
+                $('#total_target_ton').text(formatNumber(r.message) + ' Tonnage');
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_total_waste",
+            args: { from_date, to_date, tehsil },
+            callback: function(r) {
+                $('#total_waste').text(formatNumber(r.message) + ' Tons');
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_net_target_tonange",
+            args: { from_date, to_date, tehsil },
+            callback: function(r) {
+                $('#total_remain_ton').text(formatNumber(r.message) + ' Tonnage');
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_fuel_sum",
+            args: { from_date, to_date, tehsil },
+            callback: function(r) {
+                $('#total_fuel').text(formatNumber(r.message) + ' Liters');
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_diesel",
+            args: { from_date, to_date, tehsil },
+            callback: function(r) {
+                $('#total_get_diesel').text(formatNumber(r.message) + ' Liters');
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_petrol",
+            args: { from_date, to_date, tehsil },
+            callback: function(r) {
+                $('#total_get_petrol').text(formatNumber(r.message) + ' Liters');
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.total_get_vehicle",
+            args: { from_date, to_date },
+            callback: function(r) {
+                $('#total_get_vehicle').text(formatNumber(r.message));
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_active_vehicles",
+            args: { from_date, to_date },
+            callback: function(r) {
+                $('#get_active_vehicles').text(formatNumber(r.message));
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_inactive",
+            args: { from_date, to_date },
+            callback: function(r) {
+                $('#get_inactive').text(formatNumber(r.message));
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_milage",
+            args: { from_date, to_date },
+            callback: function(r) {
+                $('#get_milage').text(formatNumber(r.message));
+            }
+        });
+
+        frappe.call({
+            method: "mas_theme.dashboad_api.api.get_working_hours",
+            args: { from_date, to_date },
+            callback: function(r) {
+                $('#get_working_hours').text(formatNumber(r.message));
+            }
+        });
+    }
+
+    // Chart instances
+    let fuelChart, wasteChart, mileageChart, hoursChart, vehicleStatusChart, fuelBreakdownChart, tonnageChart;
+
+    function loadFuelChart() {
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+        const tehsil = $('#tehsil').val();
+
+        $.ajax({
+            url: "/api/method/mas_theme.dashboad_api.api.get_dashboard_data",
+            data: { from_date, to_date, tehsil },
+            success: function(response) {
+                const data = response.message?.fuel_by_date || [];
+                const labels = data.map(item => item.date);
+                const values = data.map(item => item.total_fuel);
+
+                if (fuelChart) fuelChart.destroy();
+
+                const ctx = document.getElementById("fuel_chart").getContext("2d");
+                fuelChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Fuel (Liters)",
+                            data: values,
+                            backgroundColor: "rgba(78, 115, 223, 0.8)",
+                            borderColor: "#4e73df",
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.05)" } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function loadWasteChart() {
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+        const tehsil = $('#tehsil').val();
+
+        $.ajax({
+            url: "/api/method/mas_theme.dashboad_api.api.get_dashboard_data",
+            data: { from_date, to_date, tehsil },
+            success: function(response) {
+                const data = response.message?.waste_by_date || [];
+                const labels = data.map(item => item.date);
+                const values = data.map(item => item.waste_total);
+
+                if (wasteChart) wasteChart.destroy();
+
+                const ctx = document.getElementById("total_waste_tons").getContext("2d");
+                wasteChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Waste (Tons)",
+                            data: values,
+                            borderColor: "#1cc88a",
+                            backgroundColor: "rgba(28, 200, 138, 0.1)",
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointBackgroundColor: "#1cc88a",
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.05)" } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function loadMileageChart() {
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+        const tehsil = $('#tehsil').val();
+
+        $.ajax({
+            url: "/api/method/mas_theme.dashboad_api.api.get_dashboard_data",
+            data: { from_date, to_date, tehsil },
+            success: function(response) {
+                const data = response.message?.mileage_by_date || [];
+                const labels = data.map(item => item.date);
+                const values = data.map(item => item.total_mileage);
+
+                if (mileageChart) mileageChart.destroy();
+
+                const ctx = document.getElementById("mileage_chart").getContext("2d");
+                mileageChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Mileage (km)",
+                            data: values,
+                            borderColor: "#36b9cc",
+                            backgroundColor: "rgba(54, 185, 204, 0.1)",
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointBackgroundColor: "#36b9cc",
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.05)" } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function loadWorkingHoursChart() {
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+        const tehsil = $('#tehsil').val();
+
+        $.ajax({
+            url: "/api/method/mas_theme.dashboad_api.api.get_dashboard_data",
+            data: { from_date, to_date, tehsil },
+            success: function(response) {
+                const data = response.message?.hours_by_date || [];
+                const labels = data.map(item => item.date);
+                const values = data.map(item => item.total_hours);
+
+                if (hoursChart) hoursChart.destroy();
+
+                const ctx = document.getElementById("working_hours_chart").getContext("2d");
+                hoursChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Hours",
+                            data: values,
+                            backgroundColor: "rgba(231, 74, 59, 0.8)",
+                            borderColor: "#e74a3b",
+                            borderWidth: 1,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.05)" } },
+                            x: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function loadVehicleStatusChart() {
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+        const tehsil = $('#tehsil').val();
+
+        $.ajax({
+            url: "/api/method/mas_theme.dashboad_api.api.get_dashboard_data",
+            data: { from_date, to_date, tehsil },
+            success: function(response) {
+                const active = response.message?.active_vehicles || 0;
+                const inactive = response.message?.inactive_vehicles || 0;
+                const total = active + inactive;
+
+                if (vehicleStatusChart) vehicleStatusChart.destroy();
+
+                const ctx = document.getElementById("vehicle_status_chart").getContext("2d");
+                vehicleStatusChart = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Active", "Inactive"],
+                        datasets: [{
+                            data: [active, inactive],
+                            backgroundColor: ["#1cc88a", "#e74a3c"],
+                            borderWidth: 0,
+                            cutout: "65%"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                                labels: { padding: 15, usePointStyle: true }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const percentage = total ? ((context.raw / total) * 100).toFixed(1) : 0;
+                                        return context.label + ": " + context.raw + " (" + percentage + "%)";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function loadFuelBreakdownChart() {
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+        const tehsil = $('#tehsil').val();
+
+        $.ajax({
+            url: "/api/method/mas_theme.dashboad_api.api.get_dashboard_data",
+            data: { from_date, to_date, tehsil },
+            success: function(response) {
+                const diesel = response.message?.diesel || 0;
+                const petrol = response.message?.petrol || 0;
+                const other = response.message?.fuel_other || 0;
+                const total = diesel + petrol + other;
+
+                if (fuelBreakdownChart) fuelBreakdownChart.destroy();
+
+                const ctx = document.getElementById("fuel_breakdown_chart").getContext("2d");
+                fuelBreakdownChart = new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Diesel", "Petrol", "Other"],
+                        datasets: [{
+                            data: [diesel, petrol, other],
+                            backgroundColor: ["#4e73df", "#f6c23e", "#95a5a6"],
+                            borderWidth: 0,
+                            cutout: "65%"
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                                labels: { padding: 15, usePointStyle: true }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const percentage = total ? ((context.raw / total) * 100).toFixed(1) : 0;
+                                        return context.label + ": " + context.raw + " L (" + percentage + "%)";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    function loadTonnageChart() {
+        const from_date = $('#from_date').val();
+        const to_date = $('#to_date').val();
+        const tehsil = $('#tehsil').val();
+
+        $.ajax({
+            url: "/api/method/mas_theme.dashboad_api.api.get_dashboard_data",
+            data: { from_date, to_date, tehsil },
+            success: function(response) {
+                const target = response.message?.target_tonnage || 0;
+                const net = response.message?.net_target_tonnage || 0;
+
+                if (tonnageChart) tonnageChart.destroy();
+
+                const ctx = document.getElementById("target_tonnage_chart").getContext("2d");
+                tonnageChart = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                        labels: ["Target", "Net Target"],
+                        datasets: [{
+                            data: [target, net],
+                            backgroundColor: ["#4e73df", "#1cc88a"],
+                            borderRadius: 6,
+                            barThickness: 50
+                        }]
+                    },
+                    options: {
+                        indexAxis: "y",
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            x: { beginAtZero: true, grid: { color: "rgba(0,0,0,0.05)" } },
+                            y: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>
+
+{% endblock %}
